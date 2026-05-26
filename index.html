@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Jharel Serrano | Solar System Portfolio</title>
+  <!-- Google Fonts + Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none;
+    }
+
+    body {
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      color: #edf2ff;
+      line-height: 1.5;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* Custom Planet Cursor */
+    #planetCursor {
+      position: fixed;
+      width: 32px;
+      height: 32px;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, filter 0.2s;
+      filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8));
+    }
+
+    .planet-core {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 35%, #ffaa33, #ff6600);
+      box-shadow: 0 0 15px rgba(255, 102, 0, 0.6), inset -5px -5px 10px rgba(0,0,0,0.3);
+      animation: rotatePlanet 8s linear infinite;
+    }
+
+    .planet-ring {
+      position: absolute;
+      width: 140%;
+      height: 30%;
+      top: 35%;
+      left: -20%;
+      border-radius: 50%;
+      background: rgba(0, 212, 255, 0.4);
+      transform: rotate(-20deg);
+      box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+      animation: rotateRing 6s linear infinite;
+    }
+
+    .planet-ring::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(0, 212, 255, 0.6);
+      top: -50%;
+      left: 0;
+      transform: scaleY(0.3);
+    }
+
+    @keyframes rotatePlanet {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes rotateRing {
+      from { transform: rotate(-20deg) rotateX(0deg); }
+      to { transform: rotate(-20deg) rotateX(360deg); }
+    }
+
+    /* Cursor trail particles */
+    .cursor-trail {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #00d4ff, #ff3b7c);
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.8;
+      filter: blur(1px);
+      transform: translate(-50%, -50%);
+      animation: trailFade 0.8s ease-out forwards;
+    }
+
+    @keyframes trailFade {
+      0% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+      }
+    }
+
+    ::selection {
+      background: #00d4ff;
+      color: #0a0c1a;
+    }
+
+    /* Galaxy Canvas */
+    #galaxyCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      display: block;
+    }
+
+    /* grain overlay */
+    .grain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      mix-blend-mode: overlay;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.8rem 0;
+      flex-wrap: wrap;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.7rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff, #86e3ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, #00d4ff, #ff3b7c);
+      transition: width 0.3s ease;
+    }
+
+    .logo:hover::after {
+      width: 100%;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.2rem;
+      font-weight: 500;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Nav button with planet icon */
+    .nav-btn {
+      background: none;
+      border: none;
+      color: #b9c8ff;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: 0.3s;
+      padding: 0.5rem 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: 40px;
+      position: relative;
+      backdrop-filter: blur(4px);
+    }
+
+    .nav-planet {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    /* Different planet colors for each nav */
+    .nav-btn[data-page="home"] .nav-planet {
+      background: radial-gradient(circle at 35% 35%, #ffaa44, #ff6600);
+      box-shadow: 0 0 6px #ffaa44;
+      animation: floatPlanet 3s ease-in-out infinite;
+    }
+    .nav-btn[data-page="about"] .nav-planet {
+      background: radial-gradient(circle at 35% 35%, #44aaff, #0066ff);
+      box-shadow: 0 0 6px #44aaff;
+      animation: floatPlanet 3.5s ease-in-out infinite reverse;
+    }
+    .nav-btn[data-page="education"] .nav-planet {
+      background: radial-gradient(circle at 35% 35%, #88ff88, #00aa44);
+      box-shadow: 0 0 6px #88ff88;
+      animation: floatPlanet 4s ease-in-out infinite;
+    }
+    .nav-btn[data-page="skills"] .nav-planet {
+      background: radial-gradient(circle at 35% 35%, #ff88ff, #aa00aa);
+      box-shadow: 0 0 6px #ff88ff;
+      animation: floatPlanet 2.8s ease-in-out infinite reverse;
+    }
+    .nav-btn[data-page="journey"] .nav-planet {
+      background: radial-gradient(circle at 35% 35%, #88ddff, #0088cc);
+      box-shadow: 0 0 6px #88ddff;
+      animation: floatPlanet 3.2s ease-in-out infinite;
+    }
+    .nav-btn[data-page="contact"] .nav-planet {
+      background: radial-gradient(circle at 35% 35%, #ffaa88, #cc4400);
+      box-shadow: 0 0 6px #ffaa88;
+      animation: floatPlanet 3.7s ease-in-out infinite reverse;
+    }
+
+    .nav-planet::after {
+      content: '';
+      position: absolute;
+      width: 130%;
+      height: 25%;
+      top: 40%;
+      left: -15%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(-15deg);
+      opacity: 0.6;
+    }
+
+    @keyframes floatPlanet {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(10deg); }
+    }
+
+    .nav-btn:hover .nav-planet {
+      transform: scale(1.3);
+      filter: brightness(1.2);
+      transition: transform 0.2s ease;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: #00d4ff;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-btn:hover::before,
+    .nav-btn.active::before {
+      width: 60%;
+    }
+
+    .nav-btn:hover {
+      color: white;
+      text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+      background: rgba(0, 212, 255, 0.1);
+    }
+
+    .nav-btn.active {
+      color: white;
+      text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+      background: rgba(0, 212, 255, 0.15);
+    }
+
+    /* BIG PLANET POPUP ANIMATION */
+    .big-planet-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      z-index: 10001;
+      pointer-events: none;
+      animation: planetPop 0.8s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+    }
+
+    .big-planet-popup .big-core {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      animation: bigRotate 4s linear infinite;
+    }
+
+    .big-planet-popup .big-ring {
+      position: absolute;
+      width: 140%;
+      height: 25%;
+      top: 40%;
+      left: -20%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(-20deg);
+      animation: bigRingRotate 3s linear infinite;
+    }
+
+    .big-planet-popup .big-ring::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      top: -50%;
+      left: 0;
+      transform: scaleY(0.3);
+    }
+
+    @keyframes planetPop {
+      0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+      20% { transform: translate(-50%, -50%) scale(1.1) rotate(10deg); opacity: 0.9; }
+      40% { transform: translate(-50%, -50%) scale(1) rotate(-5deg); opacity: 1; }
+      80% { transform: translate(-50%, -50%) scale(0.95) rotate(0deg); opacity: 0.8; }
+      100% { transform: translate(-50%, -50%) scale(1.5) rotate(20deg); opacity: 0; }
+    }
+
+    @keyframes bigRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes bigRingRotate {
+      from { transform: rotate(-20deg) rotateX(0deg); }
+      to { transform: rotate(-20deg) rotateX(360deg); }
+    }
+
+    .main-content {
+      flex: 1;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1rem 0 2rem 0;
+      scroll-behavior: smooth;
+    }
+
+    .main-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    .main-content::-webkit-scrollbar-track {
+      background: #0a0c15;
+      border-radius: 8px;
+    }
+    .main-content::-webkit-scrollbar-thumb {
+      background: #00d4ff;
+      border-radius: 8px;
+    }
+
+    .page {
+      display: none;
+      animation: fadeInScale 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+    }
+
+    .page.active-page {
+      display: block;
+    }
+
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.98) translateY(15px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .hero {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .badge {
+      background: rgba(0, 212, 255, 0.12);
+      backdrop-filter: blur(8px);
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 0.5px solid rgba(0, 212, 255, 0.5);
+      display: inline-block;
+      margin-bottom: 1.8rem;
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.2); }
+      50% { box-shadow: 0 0 0 8px rgba(0, 212, 255, 0); }
+    }
+
+    @keyframes glitchPulse {
+      0% { text-shadow: -2px 0 #00d4ff, 2px 0 #ff3b7c; }
+      25% { text-shadow: 2px 0 #00d4ff, -2px 0 #ff3b7c; }
+      50% { text-shadow: -1px 0 #ff3b7c, 1px 0 #00d4ff; }
+      75% { text-shadow: 1px 0 #00d4ff, -1px 0 #ff3b7c; }
+      100% { text-shadow: -2px 0 #ff3b7c, 2px 0 #00d4ff; }
+    }
+
+    .glitch-name {
+      animation: glitchPulse 2.2s infinite alternate ease-in-out;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #ffffff, #7bc9ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .typed-text {
+      font-size: 1.2rem;
+      max-width: 620px;
+      color: #b0c4ff;
+      margin-bottom: 2rem;
+      min-height: 3.5rem;
+    }
+
+    .typed-text .cursor {
+      display: inline-block;
+      width: 3px;
+      background-color: #00d4ff;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .btn-outline {
+      padding: 0.9rem 2rem;
+      border-radius: 48px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: #f0f3ff;
+      background: rgba(10, 12, 25, 0.5);
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-outline::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(0, 212, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s, height 0.4s;
+    }
+
+    .btn-outline:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-outline:hover {
+      border-color: #00d4ff;
+      background: rgba(0, 212, 255, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+      background: linear-gradient(120deg, #fff, #7bc9ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #00d4ff, #ff3b7c);
+      border-radius: 3px;
+    }
+
+    .about-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 2rem;
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      align-items: center;
+      transition: transform 0.3s ease;
+    }
+
+    .about-content:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 212, 255, 0.5);
+    }
+
+    .about-text {
+      flex: 2;
+    }
+
+    .about-text p {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      color: #d3e0ff;
+    }
+
+    .about-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .image-frame {
+      width: 100%;
+      max-width: 200px;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.7);
+      border: 2px solid rgba(0, 212, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .image-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .image-frame:hover {
+      transform: scale(1.02) rotate(2deg);
+      border-color: #00d4ff;
+    }
+
+    .education-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .edu-card {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 1.3rem 1.8rem;
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+    }
+
+    .edu-card:hover {
+      transform: translateX(10px) translateY(-3px);
+      border-color: #00d4ff;
+      box-shadow: 0 10px 30px -8px rgba(0, 212, 255, 0.3);
+    }
+
+    .edu-icon {
+      font-size: 2rem;
+      color: #00d4ff;
+      background: rgba(0, 212, 255, 0.1);
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 1.2rem;
+      transition: transform 0.3s;
+    }
+
+    .edu-card:hover .edu-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .skill-card {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 0.9rem 1.5rem;
+      border: 1px solid rgba(0, 212, 255, 0.25);
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .skill-card i {
+      font-size: 1.5rem;
+      transition: transform 0.3s;
+    }
+
+    .skill-card .fa-html5 { color: #e34c26; }
+    .skill-card .fa-css3-alt { color: #264de4; }
+    .skill-card .fa-js { color: #f7df1e; }
+    .skill-card .fa-react { color: #61dafb; }
+    .skill-card .fa-node { color: #8cc84b; }
+    .skill-card .fa-python { color: #3776ab; }
+    .skill-card .fa-java { color: #f89820; }
+    .skill-card .fa-code { color: #00599c; }
+
+    .skill-card:hover {
+      transform: translateY(-5px) scale(1.05) rotateX(5deg);
+      border-color: #00d4ff;
+      box-shadow: 0 15px 25px -10px rgba(0, 212, 255, 0.4);
+    }
+
+    .skill-card:hover i {
+      transform: scale(1.2) rotate(10deg);
+    }
+
+    .timeline-compact {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .journey-item {
+      display: flex;
+      gap: 1.8rem;
+      margin-bottom: 2rem;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      border: 1px solid rgba(0, 212, 255, 0.15);
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      align-items: center;
+    }
+
+    .journey-item:hover {
+      border-color: #00d4ff;
+      background: rgba(0, 0, 0, 0.7);
+      transform: translateX(8px);
+    }
+
+    .journey-photo {
+      width: 140px;
+      height: 140px;
+      border-radius: 1rem;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      cursor: pointer;
+    }
+
+    .journey-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+
+    .journey-photo:hover {
+      transform: scale(1.08);
+      box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+    }
+
+    .journey-photo:hover img {
+      transform: scale(1.15);
+    }
+
+    .contact-links-single {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 2rem auto;
+    }
+
+    .contact-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.9rem 1.3rem;
+      border-radius: 2rem;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      text-decoration: none;
+      color: #f0f3ff;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .contact-card:hover {
+      background: rgba(0, 212, 255, 0.15);
+      border-color: #00d4ff;
+      transform: translateX(10px) scale(1.02);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .contact-card i {
+      font-size: 1.5rem;
+      width: 2rem;
+      color: #00d4ff;
+      transition: transform 0.3s;
+    }
+
+    .contact-card:hover i {
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem 0;
+      color: #5a6699;
+      font-size: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 680px) {
+      .container { padding: 0 1.2rem; }
+      .nav-links { gap: 0.6rem; }
+      .nav-btn { font-size: 0.75rem; padding: 0.4rem 0.6rem; }
+      .nav-planet { width: 16px; height: 16px; }
+      .about-content { flex-direction: column; text-align: center; }
+      .about-image { order: -1; }
+      .edu-card { flex-direction: column; align-items: center; text-align: center; }
+      .journey-item { flex-direction: column; align-items: center; text-align: center; }
+      .journey-photo { width: 160px; height: 160px; margin: 0 auto; }
+      .big-planet-popup { width: 120px; height: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="galaxyCanvas"></canvas>
+<div class="grain"></div>
+
+<!-- Custom Planet Cursor -->
+<div id="planetCursor">
+  <div class="planet-core"></div>
+  <div class="planet-ring"></div>
+</div>
+
+<div class="container">
+  <nav>
+    <div class="logo">✦ JHAREL SERRANO ✦</div>
+    <div class="nav-links">
+      <button class="nav-btn active" data-page="home"><span class="nav-planet"></span>Home</button>
+      <button class="nav-btn" data-page="about"><span class="nav-planet"></span>About</button>
+      <button class="nav-btn" data-page="education"><span class="nav-planet"></span>Education</button>
+      <button class="nav-btn" data-page="skills"><span class="nav-planet"></span>Skills</button>
+      <button class="nav-btn" data-page="journey"><span class="nav-planet"></span>Journey</button>
+      <button class="nav-btn" data-page="contact"><span class="nav-planet"></span>Connect</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div id="home-page" class="page active-page">
+      <div class="hero">
+        <div class="badge">
+          <i class="fas fa-bolt" style="margin-right: 6px;"></i> APP & WEB DEVELOPMENT
+        </div>
+        <h1 class="glitch-name">Jharel Serrano</h1>
+        <div class="typed-text" id="typedText"></div>
+        <button class="btn-outline" id="exploreBtn"><i class="fas fa-paper-plane"></i> Explore My Work</button>
+      </div>
+      <footer>
+        <p>✦ Available for collaborations & creative direction ✦</p>
+      </footer>
+    </div>
+
+    <div id="about-page" class="page">
+      <h2 class="section-title">✦ The Human Behind <span style="color:#00d4ff;">The Code</span> ✦</h2>
+      <div class="about-content">
+        <div class="about-text">
+          <p>My name is Jharel B. Serrano, and I am a 24-year-old student from City College of Davao, currently taking up Bachelor of Technical-Vocational Teacher Education major in Computer Programming (BTVTED-CP).</p>
+          <p>My goal in life is to finish my education and become a professional who can inspire others through teaching and technology. I dream of using my programming knowledge to create projects that help people and improve systems in schools and communities.</p>
+          <p>With 1 year of experience in web development, I've worked with various technologies and frameworks. When I'm not coding, I enjoy Online Games, Reading Manhwa, and Basketball.</p>
+          <p><i class="fas fa-map-marker-alt" style="color:#00d4ff; margin-right: 6px;"></i> Davao City, Philippines</p>
+        </div>
+        <div class="about-image">
+          <div class="image-frame">
+            <img src="imageprof.png" alt="Jharel Serrano portrait" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="education-page" class="page">
+      <h2 class="section-title">📖 Academic <span style="color:#00d4ff;">Journey</span></h2>
+      <div class="education-grid">
+        <div class="edu-card">
+          <div class="edu-icon"><i class="fas fa-university"></i></div>
+          <div class="edu-details">
+            <h3>City College of Davao</h3>
+            <div class="edu-major">BTVTED — Computer Programming</div>
+            <div class="edu-date"><i class="far fa-calendar-alt"></i> 2023 – Present</div>
+            <div class="edu-desc">Full-stack development, database management, and educational technology. Pursuing a degree blending programming and pedagogy.</div>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon"><i class="fas fa-school"></i></div>
+          <div class="edu-details">
+            <h3>Don Enrique Bustamante NHS</h3>
+            <div class="edu-major">GAS (General Academic Strand)</div>
+            <div class="edu-date"><i class="far fa-calendar-alt"></i> 2020 – 2022</div>
+            <div class="edu-desc">Graduated with honors.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="skills-page" class="page">
+      <h2 class="section-title">🧠 My <span style="color:#00d4ff;">Skills</span></h2>
+      <div class="skills-grid">
+        <div class="skill-card"><i class="fab fa-html5"></i> HTML</div>
+        <div class="skill-card"><i class="fab fa-css3-alt"></i> CSS</div>
+        <div class="skill-card"><i class="fab fa-js"></i> JavaScript</div>
+        <div class="skill-card"><i class="fab fa-react"></i> React.js</div>
+        <div class="skill-card"><i class="fab fa-node"></i> Node.js</div>
+        <div class="skill-card"><i class="fab fa-python"></i> Python</div>
+        <div class="skill-card"><i class="fab fa-java"></i> Java</div>
+        <div class="skill-card"><i class="fas fa-code"></i> C++</div>
+      </div>
+    </div>
+
+    <div id="journey-page" class="page">
+      <h2 class="section-title">📸 My <span style="color:#00d4ff;">Journey</span></h2>
+      <div class="timeline-compact">
+        <div class="journey-item">
+          <div class="journey-photo">
+            <img src="https://scontent.fmnl8-4.fna.fbcdn.net/v/t1.6435-9/69227800_155106965554440_2753081776267067392_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeG7LQ_W8edca6gnTCFDZGwWBc_oZ7--7I8Fz-hnv77sj3WTtUha8bmO57xVoVx-2XzRI2T0O2J3to_lZMlsLjDK&_nc_ohc=U6SXJ6kd2aoQ7kNvwEsX4W3&_nc_oc=AdqL0uj1dvKnNFiFN4FP0MMDE_MDf_qu9UjxyhZpSxYbCCCvpcyuyunbZ5XhQNt6IRs&_nc_zt=23&_nc_ht=scontent.fmnl8-4.fna&_nc_gid=EypKZlRyn65pIXJgM5ij5w&_nc_ss=7a2a8&oh=00_Af4ZvPeGNGAQzpLfdW_j1xE9G47xbzOt9bAUkFGYcO_iHw&oe=6A3CB17F" alt="High School">
+          </div>
+          <div class="journey-text">
+            <span class="journey-year">2020 – 2022</span>
+            <h3>🏫 High School Days</h3>
+            <p>Graduated with honors from Don Enrique Bustamante NHS.</p>
+          </div>
+        </div>
+        <div class="journey-item">
+          <div class="journey-photo">
+            <img src="https://scontent.fmnl8-1.fna.fbcdn.net/v/t39.30808-6/473416551_122218421378032151_4322361603138092870_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeGwON7ba8-x1HDIdl1ZsqWQ-ZKBTqnEbH75koFOqcRsfvAvSjNpJp92F2rFfbQdSoy3fD0Q1Pb1sabbToFXUR4F&_nc_ohc=1LA6TkT9IOcQ7kNvwFL6j-h&_nc_oc=AdokEf0fcBsIpV2ku810c9Fgj5raFhXYfX-3KKcIS13pA_VX36KeGJr1uxlr3Xt8anE&_nc_zt=23&_nc_ht=scontent.fmnl8-1.fna&_nc_gid=NJ2uZ-94j-2FM56EtcQhPw&_nc_ss=7a2a8&oh=00_Af4C-k05IWd6DNoEYfLLyRrBtB8Fh3oDyo5gc7sljxW8CQ&oe=6A1B1071" alt="College">
+          </div>
+          <div class="journey-text">
+            <span class="journey-year">2023 – Present</span>
+            <h3>🎓 College Life at CCD</h3>
+            <p>Currently pursuing BTVTED-CP at City College of Davao. Immersed in full-stack development, database management, and educational tech.</p>
+          </div>
+        </div>
+        <div class="journey-item">
+          <div class="journey-photo">
+            <img src="imagefut.png" alt="Future">
+          </div>
+          <div class="journey-text">
+            <span class="journey-year">2025 & Beyond</span>
+            <h3>🚀 The Future Ahead</h3>
+            <p>Aspiring to inspire through teaching and technology. Creating impactful systems for schools and communities.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="contact-page" class="page">
+      <h2 class="section-title">🤝 Let's <span style="color:#00d4ff;">Connect</span></h2>
+      <div class="contact-links-single">
+        <a href="https://github.com/jharelbalasabasserrano-dev" class="contact-card"><i class="fab fa-github"></i> <span>/jharelbalasabasserrano-dev</span></a>
+        <a href="#" class="contact-card"><i class="fab fa-facebook"></i> <span>Jharel Serrano</span></a>
+        <a href="#" class="contact-card"><i class="fas fa-envelope"></i> <span>jharelbalasabas.serrano@ccd.edu.ph</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ========== BIG PLANET POPUP ON NAV CLICK ==========
+    function showBigPlanet(planetColor, ringColor) {
+      const existingPopup = document.querySelector('.big-planet-popup');
+      if (existingPopup) existingPopup.remove();
+      
+      const popup = document.createElement('div');
+      popup.className = 'big-planet-popup';
+      
+      const core = document.createElement('div');
+      core.className = 'big-core';
+      core.style.background = planetColor;
+      core.style.boxShadow = `0 0 30px ${ringColor}`;
+      
+      const ring = document.createElement('div');
+      ring.className = 'big-ring';
+      ring.style.border = `2px solid ${ringColor}`;
+      ring.style.boxShadow = `0 0 15px ${ringColor}`;
+      
+      core.appendChild(ring);
+      popup.appendChild(core);
+      document.body.appendChild(popup);
+      
+      setTimeout(() => {
+        if (popup && popup.remove) popup.remove();
+      }, 800);
+    }
+    
+    const planetColors = {
+      home: { core: 'radial-gradient(circle at 35% 35%, #ffaa44, #ff6600)', ring: '#ffaa44' },
+      about: { core: 'radial-gradient(circle at 35% 35%, #44aaff, #0066ff)', ring: '#44aaff' },
+      education: { core: 'radial-gradient(circle at 35% 35%, #88ff88, #00aa44)', ring: '#88ff88' },
+      skills: { core: 'radial-gradient(circle at 35% 35%, #ff88ff, #aa00aa)', ring: '#ff88ff' },
+      journey: { core: 'radial-gradient(circle at 35% 35%, #88ddff, #0088cc)', ring: '#88ddff' },
+      contact: { core: 'radial-gradient(circle at 35% 35%, #ffaa88, #cc4400)', ring: '#ffaa88' }
+    };
+    
+    // PLANET CURSOR
+    const planetCursor = document.getElementById('planetCursor');
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      createTrail(e.clientX, e.clientY);
+    });
+    
+    function createTrail(x, y) {
+      const trail = document.createElement('div');
+      trail.className = 'cursor-trail';
+      trail.style.left = x + 'px';
+      trail.style.top = y + 'px';
+      document.body.appendChild(trail);
+      setTimeout(() => trail.remove(), 800);
+    }
+    
+    function animateCursor() {
+      cursorX += (mouseX - cursorX) * 0.2;
+      cursorY += (mouseY - cursorY) * 0.2;
+      planetCursor.style.left = cursorX + 'px';
+      planetCursor.style.top = cursorY + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+    
+    const interactiveElements = document.querySelectorAll('button, a, .skill-card, .contact-card, .nav-btn, .journey-photo, .btn-outline');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        planetCursor.style.width = '48px';
+        planetCursor.style.height = '48px';
+        planetCursor.style.filter = 'drop-shadow(0 0 15px rgba(0, 212, 255, 1))';
+      });
+      el.addEventListener('mouseleave', () => {
+        planetCursor.style.width = '32px';
+        planetCursor.style.height = '32px';
+        planetCursor.style.filter = 'drop-shadow(0 0 8px rgba(0, 212, 255, 0.8))';
+      });
+    });
+    
+    // ========== GALAXY BACKGROUND WITH PLANETS ==========
+    const canvas = document.getElementById('galaxyCanvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    let nebulaParticles = [];
+    let shootingStars = [];
+    
+    // Background planets data
+    let bgPlanets = [];
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initGalaxy();
+    }
+    
+    function initGalaxy() {
+      stars = [];
+      nebulaParticles = [];
+      bgPlanets = [];
+      
+      // Stars
+      for (let i = 0; i < 600; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 1.8 + 0.5,
+          alpha: Math.random() * 0.6 + 0.2,
+          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          twinkleDir: Math.random() > 0.5 ? 1 : -1
+        });
+      }
+      
+      // Nebula clouds
+      for (let i = 0; i < 8; i++) {
+        nebulaParticles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 150 + 80,
+          hue: Math.random() * 60 + 180,
+          alpha: Math.random() * 0.08 + 0.03,
+          speedX: (Math.random() - 0.5) * 0.2,
+          speedY: (Math.random() - 0.5) * 0.2
+        });
+      }
+      
+      // Background Planets - Large decorative planets
+      bgPlanets.push({
+        x: canvas.width * 0.85,
+        y: canvas.height * 0.2,
+        radius: 60,
+        color1: '#ff8844',
+        color2: '#aa4422',
+        ringColor: 'rgba(255, 136, 68, 0.4)',
+        hasRing: true,
+        rotation: 0,
+        rotationSpeed: 0.002,
+        orbitRadius: 0,
+        orbitSpeed: 0
+      });
+      
+      bgPlanets.push({
+        x: canvas.width * 0.1,
+        y: canvas.height * 0.7,
+        radius: 45,
+        color1: '#4488ff',
+        color2: '#2244aa',
+        ringColor: 'rgba(68, 136, 255, 0.35)',
+        hasRing: true,
+        rotation: 0,
+        rotationSpeed: 0.0015,
+        orbitRadius: 0,
+        orbitSpeed: 0
+      });
+      
+      bgPlanets.push({
+        x: canvas.width * 0.5,
+        y: canvas.height * 0.85,
+        radius: 35,
+        color1: '#88ff88',
+        color2: '#44aa44',
+        ringColor: null,
+        hasRing: false,
+        rotation: 0,
+        rotationSpeed: 0.003,
+        orbitRadius: 0,
+        orbitSpeed: 0
+      });
+      
+      bgPlanets.push({
+        x: canvas.width * 0.2,
+        y: canvas.height * 0.15,
+        radius: 28,
+        color1: '#ff88ff',
+        color2: '#aa44aa',
+        ringColor: null,
+        hasRing: false,
+        rotation: 0,
+        rotationSpeed: 0.004,
+        orbitRadius: 0,
+        orbitSpeed: 0
+      });
+      
+      bgPlanets.push({
+        x: canvas.width * 0.75,
+        y: canvas.height * 0.65,
+        radius: 50,
+        color1: '#88ddff',
+        color2: '#4488aa',
+        ringColor: 'rgba(136, 221, 255, 0.3)',
+        hasRing: true,
+        rotation: 0,
+        rotationSpeed: 0.0025,
+        orbitRadius: 0,
+        orbitSpeed: 0
+      });
+      
+      // Small orbiting moon around first planet
+      bgPlanets.push({
+        x: canvas.width * 0.85 + 35,
+        y: canvas.height * 0.2 - 20,
+        radius: 10,
+        color1: '#ccccaa',
+        color2: '#999977',
+        ringColor: null,
+        hasRing: false,
+        rotation: 0,
+        rotationSpeed: 0.01,
+        orbitRadius: 45,
+        orbitSpeed: 0.008,
+        orbitCenterX: canvas.width * 0.85,
+        orbitCenterY: canvas.height * 0.2
+      });
+    }
+    
+    function drawShootingStar() {
+      shootingStars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height * 0.3,
+        length: 40,
+        speedX: (Math.random() - 0.5) * 8 - 3,
+        speedY: Math.random() * 5 + 3,
+        alpha: 0.8
+      });
+    }
+    
+    function drawBackgroundPlanets() {
+      for (let planet of bgPlanets) {
+        // Update orbiting moons
+        if (planet.orbitRadius > 0 && planet.orbitCenterX !== undefined) {
+          planet.orbitAngle = (planet.orbitAngle || 0) + planet.orbitSpeed;
+          planet.x = planet.orbitCenterX + Math.cos(planet.orbitAngle) * planet.orbitRadius;
+          planet.y = planet.orbitCenterY + Math.sin(planet.orbitAngle) * planet.orbitRadius;
+        } else {
+          planet.rotation += planet.rotationSpeed;
+        }
+        
+        // Draw planet core
+        const gradient = ctx.createRadialGradient(
+          planet.x - planet.radius * 0.3, 
+          planet.y - planet.radius * 0.3, 
+          5,
+          planet.x, 
+          planet.y, 
+          planet.radius
+        );
+        gradient.addColorStop(0, planet.color1);
+        gradient.addColorStop(1, planet.color2);
+        
+        ctx.beginPath();
+        ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Add shadow/detail
+        ctx.beginPath();
+        ctx.arc(planet.x - planet.radius * 0.2, planet.y - planet.radius * 0.2, planet.radius * 0.3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.fill();
+        
+        // Draw ring if planet has one
+        if (planet.hasRing) {
+          ctx.save();
+          ctx.translate(planet.x, planet.y);
+          ctx.rotate(planet.rotation);
+          ctx.beginPath();
+          ctx.ellipse(0, 0, planet.radius * 1.4, planet.radius * 0.35, 0, 0, Math.PI * 2);
+          ctx.fillStyle = planet.ringColor;
+          ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(0, 0, planet.radius * 1.5, planet.radius * 0.4, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(255, 255, 255, 0.3)`;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }
+    
+    function drawGalaxy() {
+      if (!ctx) return;
+      
+      // Deep space gradient
+      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      grad.addColorStop(0, '#020108');
+      grad.addColorStop(0.5, '#04020f');
+      grad.addColorStop(1, '#000000');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Nebula clouds
+      nebulaParticles.forEach(neb => {
+        const gradient = ctx.createRadialGradient(neb.x, neb.y, 0, neb.x, neb.y, neb.radius);
+        gradient.addColorStop(0, `hsla(${neb.hue}, 70%, 50%, ${neb.alpha * 1.5})`);
+        gradient.addColorStop(0.5, `hsla(${neb.hue + 20}, 80%, 40%, ${neb.alpha})`);
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(neb.x, neb.y, neb.radius, 0, Math.PI * 2);
+        ctx.fill();
+        neb.x += neb.speedX;
+        neb.y += neb.speedY;
+        if (neb.x < -200) neb.x = canvas.width + 200;
+        if (neb.x > canvas.width + 200) neb.x = -200;
+        if (neb.y < -200) neb.y = canvas.height + 200;
+        if (neb.y > canvas.height + 200) neb.y = -200;
+      });
+      
+      // Draw background planets
+      drawBackgroundPlanets();
+      
+      // Stars with twinkling
+      stars.forEach(star => {
+        star.alpha += star.twinkleSpeed * star.twinkleDir;
+        if (star.alpha > 0.9) star.twinkleDir = -1;
+        if (star.alpha < 0.2) star.twinkleDir = 1;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha * 0.8})`;
+        ctx.fill();
+      });
+      
+      // Shooting stars
+      if (Math.random() < 0.02) drawShootingStar();
+      
+      for (let i = 0; i < shootingStars.length; i++) {
+        const s = shootingStars[i];
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.length, s.y + s.length * 0.5);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${s.alpha})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        s.x += s.speedX;
+        s.y += s.speedY;
+        s.alpha -= 0.02;
+        if (s.alpha <= 0 || s.x > canvas.width || s.y > canvas.height) {
+          shootingStars.splice(i, 1);
+          i--;
+        }
+      }
+      
+      requestAnimationFrame(drawGalaxy);
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    drawGalaxy();
+    
+    // TYPING ANIMATION
+    const phrases = [
+      "Building digital bridges between imagination and interaction.",
+      "Code, motion, and future-forward design.",
+      "Creative technologist & visionary explorer."
+    ];
+    let phraseIndex = 0, charIndex = 0, isDeleting = false;
+    const typedElement = document.getElementById('typedText');
+    
+    function typeEffect() {
+      if (!typedElement) return;
+      const currentPhrase = phrases[phraseIndex];
+      if (isDeleting) {
+        typedElement.innerHTML = currentPhrase.substring(0, charIndex - 1) + '<span class="cursor">|</span>';
+        charIndex--;
+        if (charIndex === 0) {
+          isDeleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+        }
+      } else {
+        typedElement.innerHTML = currentPhrase.substring(0, charIndex + 1) + '<span class="cursor">|</span>';
+        charIndex++;
+        if (charIndex === currentPhrase.length) {
+          isDeleting = true;
+          setTimeout(typeEffect, 2000);
+          return;
+        }
+      }
+      setTimeout(typeEffect, isDeleting ? 50 : 100);
+    }
+    typeEffect();
+    
+    // NAVIGATION
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const pages = {
+      home: document.getElementById('home-page'),
+      about: document.getElementById('about-page'),
+      education: document.getElementById('education-page'),
+      skills: document.getElementById('skills-page'),
+      journey: document.getElementById('journey-page'),
+      contact: document.getElementById('contact-page')
+    };
+    
+    function showPage(pageId) {
+      const colors = planetColors[pageId];
+      if (colors) showBigPlanet(colors.core, colors.ring);
+      
+      Object.values(pages).forEach(page => {
+        if (page) page.classList.remove('active-page');
+      });
+      if (pages[pageId]) pages[pageId].classList.add('active-page');
+      
+      navBtns.forEach(btn => {
+        if (btn.getAttribute('data-page') === pageId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      const mainContent = document.querySelector('.main-content');
+      if (mainContent) mainContent.scrollTop = 0;
+    }
+    
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pageId = btn.getAttribute('data-page');
+        showPage(pageId);
+      });
+    });
+    
+    const exploreBtn = document.getElementById('exploreBtn');
+    if (exploreBtn) {
+      exploreBtn.addEventListener('click', () => {
+        showPage('about');
+      });
+    }
+    
+    const activeBtn = document.querySelector('.nav-btn.active');
+    if (activeBtn) {
+      showPage(activeBtn.getAttribute('data-page'));
+    } else {
+      showPage('home');
+    }
+    
+    const imgFrame = document.querySelector('.image-frame');
+    if(imgFrame) {
+      let floatY = 0, direction = 1;
+      setInterval(() => {
+        if(floatY > 3) direction = -1;
+        if(floatY < -3) direction = 1;
+        floatY += direction * 0.1;
+        imgFrame.style.transform = `translateY(${floatY}px)`;
+      }, 80);
+    }
+    
+    console.log("%c✨ Jharel Serrano — Multiple background planets added! A whole solar system! 🌍🪐✨", "color: #00d4ff; font-size: 14px; font-weight: bold;");
+  })();
+</script>
+</body>
+</html>
