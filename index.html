@@ -1,1428 +1,1530 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Jharel Serrano | Galactic Creative Technologist</title>
-  <!-- Google Fonts + Font Awesome -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jharel Serrano | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      cursor: none;
+    :root {
+      --c: #00ffe7;
+      --m: #ff00aa;
+      --v: #7b2fff;
+      --y: #ffdd00;
+      --bg: #010208;
+      --bg2: #020410;
+      --panel: rgba(0,255,231,0.03);
+      --border: rgba(0,255,231,0.12);
+      --text: #cce8ff;
     }
 
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; cursor:none; }
+
+    html, body { width:100%; height:100%; overflow:hidden; }
     body {
-      background: #000000;
-      font-family: 'Inter', sans-serif;
-      color: #edf2ff;
-      line-height: 1.5;
-      overflow: hidden;
-      height: 100vh;
+      background: var(--bg);
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--text);
+      position: relative;
     }
 
-    /* Custom Planet Cursor */
-    #planetCursor {
+    /* ─────────── CURSOR SYSTEM ─────────── */
+    #cur-cross {
       position: fixed;
-      width: 32px;
-      height: 32px;
       pointer-events: none;
-      z-index: 10000;
-      transform: translate(-50%, -50%);
-      transition: width 0.2s, height 0.2s, filter 0.2s;
-      filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8));
+      z-index: 99999;
+      width: 32px; height: 32px;
+      transform: translate(-50%,-50%);
     }
-
-    .planet-core {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 35%, #ffaa33, #ff6600);
-      box-shadow: 0 0 15px rgba(255, 102, 0, 0.6), inset -5px -5px 10px rgba(0,0,0,0.3);
-      animation: rotatePlanet 8s linear infinite;
-    }
-
-    .planet-ring {
-      position: absolute;
-      width: 140%;
-      height: 30%;
-      top: 35%;
-      left: -20%;
-      border-radius: 50%;
-      background: rgba(0, 212, 255, 0.4);
-      transform: rotate(-20deg);
-      box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
-      animation: rotateRing 6s linear infinite;
-    }
-
-    .planet-ring::before {
+    #cur-cross::before, #cur-cross::after {
       content: '';
       position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 2px solid rgba(0, 212, 255, 0.6);
-      top: -50%;
-      left: 0;
-      transform: scaleY(0.3);
+      background: var(--c);
+      box-shadow: 0 0 12px var(--c), 0 0 24px var(--c);
+      border-radius: 1px;
     }
+    #cur-cross::before { width: 2px; height: 100%; left: 50%; top: 0; transform: translateX(-50%); }
+    #cur-cross::after  { height: 2px; width: 100%; top: 50%; left: 0; transform: translateY(-50%); }
 
-    @keyframes rotatePlanet {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes rotateRing {
-      from { transform: rotate(-20deg) rotateX(0deg); }
-      to { transform: rotate(-20deg) rotateX(360deg); }
-    }
-
-    /* Cursor trail particles */
-    .cursor-trail {
+    #cur-dot {
       position: fixed;
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
+      background: #fff;
       border-radius: 50%;
-      background: radial-gradient(circle, #00d4ff, #ff3b7c);
       pointer-events: none;
-      z-index: 9999;
-      opacity: 0.8;
-      filter: blur(1px);
-      transform: translate(-50%, -50%);
+      z-index: 100000;
+      transform: translate(-50%,-50%);
+      box-shadow: 0 0 8px var(--c), 0 0 16px var(--c);
+    }
+
+    #cur-ring {
+      position: fixed;
+      width: 64px; height: 64px;
+      border: 1px solid rgba(0,255,231,0.25);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99997;
+      transform: translate(-50%,-50%);
+      transition: width 0.4s cubic-bezier(0.34,1.56,0.64,1),
+                  height 0.4s cubic-bezier(0.34,1.56,0.64,1),
+                  border-color 0.3s;
+    }
+    body.over #cur-ring {
+      width: 88px; height: 88px;
+      border-color: rgba(255,0,170,0.5);
+    }
+
+    /* corner ticks on ring */
+    #cur-ring::before, #cur-ring::after {
+      content: '';
+      position: absolute;
+      background: var(--c);
+      border-radius: 1px;
+    }
+    #cur-ring::before { width: 8px; height: 1.5px; top: 50%; left: -4px; transform: translateY(-50%); box-shadow: 0 0 8px var(--c); }
+    #cur-ring::after  { height: 8px; width: 1.5px; left: 50%; top: -4px; transform: translateX(-50%); box-shadow: 0 0 8px var(--c); }
+
+    .trail {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99990;
+      transform: translate(-50%,-50%);
       animation: trailFade 0.8s ease-out forwards;
     }
-
     @keyframes trailFade {
-      0% {
-        opacity: 0.8;
-        transform: translate(-50%, -50%) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.2);
-      }
+      from { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
+      to   { opacity: 0;   transform: translate(-50%,-50%) scale(0); }
     }
 
-    ::selection {
-      background: #00d4ff;
-      color: #0a0c1a;
-    }
-
-    /* Galaxy Canvas */
-    #galaxyCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+    /* ─────────── CANVAS BG ─────────── */
+    #bg-canvas {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
       z-index: 0;
-      display: block;
     }
 
-    /* grain overlay */
-    .grain {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+    /* ─────────── SCAN LINES ─────────── */
+    .scanlines {
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,231,0.012) 2px,
+        rgba(0,255,231,0.012) 4px
+      );
       pointer-events: none;
-      z-index: 1000;
-      opacity: 0.02;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-      mix-blend-mode: overlay;
+      z-index: 2;
+      animation: scanShift 8s linear infinite;
+    }
+    @keyframes scanShift { from{background-position:0 0;} to{background-position:0 200px;} }
+
+    /* ─────────── VIGNETTE ─────────── */
+    .vignette {
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(1,2,8,0.85) 100%);
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 2rem;
+    /* ─────────── GRAIN ─────────── */
+    .grain {
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      opacity: 0.018;
+      pointer-events: none;
+      z-index: 3;
+      mix-blend-mode: screen;
+      animation: grainShift 0.35s steps(10) infinite;
+    }
+    @keyframes grainShift {
+      0%  {transform:translate(0,0);}
+      25% {transform:translate(-3px,2px);}
+      50% {transform:translate(2px,-2px);}
+      75% {transform:translate(-2px,-3px);}
+    }
+
+    /* ─────────── HUD CORNER DECORATIONS ─────────── */
+    .hud-corner {
+      position: fixed;
+      width: 60px; height: 60px;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .hud-corner::before, .hud-corner::after {
+      content: '';
+      position: absolute;
+      background: var(--c);
+      box-shadow: 0 0 10px var(--c);
+    }
+    .hud-corner::before { width: 2px; height: 24px; }
+    .hud-corner::after  { height: 2px; width: 24px; }
+
+    .hud-tl { top: 16px; left: 16px; }
+    .hud-tl::before { top:0; left:0; }
+    .hud-tl::after  { top:0; left:0; }
+
+    .hud-tr { top: 16px; right: 16px; }
+    .hud-tr::before { top:0; right:0; left:auto; }
+    .hud-tr::after  { top:0; right:0; left:auto; }
+
+    .hud-bl { bottom: 16px; left: 16px; }
+    .hud-bl::before { bottom:0; left:0; top:auto; }
+    .hud-bl::after  { bottom:0; left:0; top:auto; }
+
+    .hud-br { bottom: 16px; right: 16px; }
+    .hud-br::before { bottom:0; right:0; left:auto; top:auto; }
+    .hud-br::after  { bottom:0; right:0; left:auto; top:auto; }
+
+    /* Animated HUD status bar */
+    .hud-status {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: rgba(0,255,231,0.4);
+      letter-spacing: 0.25em;
+      z-index: 5;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .hud-status span { color: rgba(0,255,231,0.7); }
+
+    /* ─────────── LAYOUT ─────────── */
+    .shell {
       position: relative;
       z-index: 10;
+      width: 100%;
       height: 100vh;
       display: flex;
       flex-direction: column;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
     }
 
+    /* ─────────── NAV ─────────── */
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.8rem 0;
-      flex-wrap: wrap;
-      gap: 1rem;
+      padding: 1.4rem 0;
       flex-shrink: 0;
+      position: relative;
+    }
+    nav::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--c), rgba(0,255,231,0.3), transparent);
+      animation: navLine 4s ease-in-out infinite;
+    }
+    @keyframes navLine {
+      0%,100% { opacity: 0.4; } 50% { opacity: 1; }
     }
 
     .logo {
-      font-weight: 800;
-      font-size: 1.7rem;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #ffffff, #86e3ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      transition: 0.3s;
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.3rem;
+      letter-spacing: 0.15em;
+      color: var(--c);
+      text-shadow: 0 0 20px var(--c), 0 0 40px rgba(0,255,231,0.4);
+      animation: logoPulse 3s ease-in-out infinite;
       position: relative;
     }
-
     .logo::after {
-      content: '';
+      content: attr(data-text);
       position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0%;
-      height: 2px;
-      background: linear-gradient(90deg, #00d4ff, #ff3b7c);
-      transition: width 0.3s ease;
+      inset: 0;
+      color: var(--m);
+      text-shadow: 0 0 20px var(--m);
+      clip-path: inset(0 0 0 0);
+      animation: logoGlitch 5s infinite;
+      opacity: 0;
+    }
+    @keyframes logoGlitch {
+      0%,85%,100% { opacity:0; transform:translate(0,0); }
+      87% { opacity:0.7; transform:translate(-2px,0); clip-path:inset(30% 0 50% 0); }
+      89% { opacity:0.7; transform:translate(2px,0); clip-path:inset(60% 0 15% 0); }
+      91% { opacity:0; }
+    }
+    @keyframes logoPulse {
+      0%,100% { text-shadow: 0 0 20px var(--c), 0 0 40px rgba(0,255,231,0.3); }
+      50%      { text-shadow: 0 0 30px var(--c), 0 0 60px rgba(0,255,231,0.6), 0 0 80px rgba(0,255,231,0.2); }
     }
 
-    .logo:hover::after {
-      width: 100%;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 1.2rem;
-      font-weight: 500;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+    .nav-links { display:flex; gap:0.2rem; align-items:center; }
 
     .nav-btn {
+      position: relative;
       background: none;
       border: none;
-      color: #b9c8ff;
-      font-size: 1rem;
-      font-family: 'Inter', sans-serif;
+      color: rgba(204,232,255,0.45);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: 0.3s;
-      padding: 0.5rem 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border-radius: 40px;
-      position: relative;
-      backdrop-filter: blur(4px);
+      padding: 0.5rem 0.9rem;
+      transition: color 0.3s;
+      overflow: hidden;
     }
-
-    .nav-planet {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .nav-btn[data-page="home"] .nav-planet {
-      background: radial-gradient(circle at 35% 35%, #ffaa44, #ff6600);
-      box-shadow: 0 0 6px #ffaa44;
-      animation: floatPlanet 3s ease-in-out infinite;
-    }
-    .nav-btn[data-page="about"] .nav-planet {
-      background: radial-gradient(circle at 35% 35%, #44aaff, #0066ff);
-      box-shadow: 0 0 6px #44aaff;
-      animation: floatPlanet 3.5s ease-in-out infinite reverse;
-    }
-    .nav-btn[data-page="education"] .nav-planet {
-      background: radial-gradient(circle at 35% 35%, #88ff88, #00aa44);
-      box-shadow: 0 0 6px #88ff88;
-      animation: floatPlanet 4s ease-in-out infinite;
-    }
-    .nav-btn[data-page="skills"] .nav-planet {
-      background: radial-gradient(circle at 35% 35%, #ff88ff, #aa00aa);
-      box-shadow: 0 0 6px #ff88ff;
-      animation: floatPlanet 2.8s ease-in-out infinite reverse;
-    }
-    .nav-btn[data-page="journey"] .nav-planet {
-      background: radial-gradient(circle at 35% 35%, #88ddff, #0088cc);
-      box-shadow: 0 0 6px #88ddff;
-      animation: floatPlanet 3.2s ease-in-out infinite;
-    }
-    .nav-btn[data-page="contact"] .nav-planet {
-      background: radial-gradient(circle at 35% 35%, #ffaa88, #cc4400);
-      box-shadow: 0 0 6px #ffaa88;
-      animation: floatPlanet 3.7s ease-in-out infinite reverse;
-    }
-
-    .nav-planet::after {
-      content: '';
-      position: absolute;
-      width: 130%;
-      height: 25%;
-      top: 40%;
-      left: -15%;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      transform: rotate(-15deg);
-      opacity: 0.6;
-    }
-
-    @keyframes floatPlanet {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-3px) rotate(10deg); }
-    }
-
-    .nav-btn:hover .nav-planet {
-      transform: scale(1.3);
-      filter: brightness(1.2);
-      transition: transform 0.2s ease;
-    }
-
     .nav-btn::before {
       content: '';
       position: absolute;
-      bottom: -2px;
-      left: 50%;
-      width: 0;
-      height: 2px;
-      background: #00d4ff;
-      transition: all 0.3s ease;
-      transform: translateX(-50%);
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,255,231,0.08), transparent);
+      opacity: 0;
+      transform: skewX(-8deg);
+      transition: opacity 0.3s;
     }
-
-    .nav-btn:hover::before,
-    .nav-btn.active::before {
-      width: 60%;
-    }
-
-    .nav-btn:hover {
-      color: white;
-      text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
-      background: rgba(0, 212, 255, 0.1);
-    }
-
-    .nav-btn.active {
-      color: white;
-      text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
-      background: rgba(0, 212, 255, 0.15);
-    }
-
-    /* BIG PLANET POPUP ANIMATION */
-    .big-planet-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      z-index: 10001;
-      pointer-events: none;
-      animation: planetPop 0.8s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
-    }
-
-    .big-planet-popup .big-core {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      position: relative;
-      animation: bigRotate 4s linear infinite;
-    }
-
-    .big-planet-popup .big-ring {
-      position: absolute;
-      width: 140%;
-      height: 25%;
-      top: 40%;
-      left: -20%;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      transform: rotate(-20deg);
-      animation: bigRingRotate 3s linear infinite;
-    }
-
-    .big-planet-popup .big-ring::before {
+    .nav-btn::after {
       content: '';
       position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 3px solid rgba(255, 255, 255, 0.5);
-      top: -50%;
-      left: 0;
-      transform: scaleY(0.3);
+      bottom: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: var(--c);
+      transform: scaleX(0);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 0 8px var(--c);
+    }
+    .nav-btn:hover::before, .nav-btn.active::before { opacity: 1; }
+    .nav-btn:hover::after, .nav-btn.active::after { transform: scaleX(1); }
+    .nav-btn:hover, .nav-btn.active { color: var(--c); text-shadow: 0 0 12px rgba(0,255,231,0.6); }
+    .nav-btn.active { color: #fff; }
+
+    /* data-index number prefix */
+    .nav-btn .idx {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.5rem;
+      vertical-align: super;
+      opacity: 0.5;
+      margin-right: 0.3rem;
     }
 
-    @keyframes planetPop {
-      0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
-      20% { transform: translate(-50%, -50%) scale(1.1) rotate(10deg); opacity: 0.9; }
-      40% { transform: translate(-50%, -50%) scale(1) rotate(-5deg); opacity: 1; }
-      80% { transform: translate(-50%, -50%) scale(0.95) rotate(0deg); opacity: 0.8; }
-      100% { transform: translate(-50%, -50%) scale(1.5) rotate(20deg); opacity: 0; }
-    }
-
-    @keyframes bigRotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes bigRingRotate {
-      from { transform: rotate(-20deg) rotateX(0deg); }
-      to { transform: rotate(-20deg) rotateX(360deg); }
-    }
-
-    .main-content {
+    /* ─────────── MAIN AREA ─────────── */
+    .main {
       flex: 1;
-      position: relative;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 1rem 0 2rem 0;
+      padding: 0.5rem 0 2rem;
       scroll-behavior: smooth;
     }
-
-    .main-content::-webkit-scrollbar {
-      width: 6px;
-    }
-    .main-content::-webkit-scrollbar-track {
-      background: #0a0c15;
-      border-radius: 8px;
-    }
-    .main-content::-webkit-scrollbar-thumb {
-      background: #00d4ff;
-      border-radius: 8px;
+    .main::-webkit-scrollbar { width: 2px; }
+    .main::-webkit-scrollbar-thumb {
+      background: var(--c);
+      box-shadow: 0 0 8px var(--c);
     }
 
-    .page {
-      display: none;
-      animation: fadeInScale 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
-    }
-
-    .page.active-page {
+    /* ─────────── PAGES ─────────── */
+    .page { display: none; }
+    .page.active {
       display: block;
+      animation: pageReveal 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes pageReveal {
+      from { opacity:0; transform:translateY(30px) skewY(1deg); filter:blur(12px); }
+      to   { opacity:1; transform:translateY(0) skewY(0); filter:blur(0); }
     }
 
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.98) translateY(15px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
+    /* ─────────── HOME ─────────── */
     .hero {
-      min-height: 70vh;
+      min-height: 74vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 1rem 0;
-    }
-
-    .badge {
-      background: rgba(0, 212, 255, 0.15);
-      backdrop-filter: blur(8px);
-      padding: 0.4rem 1.2rem;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      border: 0.5px solid rgba(0, 212, 255, 0.5);
-      display: inline-block;
-      margin-bottom: 1.8rem;
-      animation: pulseGlow 2s infinite;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.2); }
-      50% { box-shadow: 0 0 0 8px rgba(0, 212, 255, 0); }
-    }
-
-    @keyframes glitchPulse {
-      0% { text-shadow: -2px 0 #00d4ff, 2px 0 #ff3b7c; }
-      25% { text-shadow: 2px 0 #00d4ff, -2px 0 #ff3b7c; }
-      50% { text-shadow: -1px 0 #ff3b7c, 1px 0 #00d4ff; }
-      75% { text-shadow: 1px 0 #00d4ff, -1px 0 #ff3b7c; }
-      100% { text-shadow: -2px 0 #ff3b7c, 2px 0 #00d4ff; }
-    }
-
-    .glitch-name {
-      animation: glitchPulse 2.2s infinite alternate ease-in-out;
-    }
-
-    .hero h1 {
-      font-size: clamp(3rem, 8vw, 5.5rem);
-      font-weight: 800;
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-      background: linear-gradient(145deg, #ffffff, #7bc9ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 1rem;
-    }
-
-    .typed-text {
-      font-size: 1.2rem;
-      max-width: 620px;
-      color: #b0c4ff;
-      margin-bottom: 2rem;
-      min-height: 3.5rem;
-    }
-
-    .typed-text .cursor {
-      display: inline-block;
-      width: 3px;
-      background-color: #00d4ff;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-
-    .btn-outline {
-      padding: 0.9rem 2rem;
-      border-radius: 48px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1.5px solid rgba(255, 255, 255, 0.3);
-      color: #f0f3ff;
-      background: rgba(10, 12, 25, 0.5);
-      backdrop-filter: blur(4px);
-      cursor: pointer;
       position: relative;
-      overflow: hidden;
+      padding: 2rem 0;
     }
 
-    .btn-outline::before {
+    /* Animated hexagon orbit */
+    .orbit-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(0,255,231,0.1);
+      animation: orbitSpin linear infinite;
+      pointer-events: none;
+    }
+    .orbit-ring::before {
       content: '';
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      background: rgba(0, 212, 255, 0.2);
+      width: 6px; height: 6px;
+      background: var(--c);
       border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.4s, height 0.4s;
+      top: -3px; left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 12px var(--c), 0 0 24px var(--c);
+    }
+    .orbit-ring:nth-child(1) { width: 260px; height: 260px; top:50%; left:50%; transform:translate(-50%,-50%); animation-duration:12s; }
+    .orbit-ring:nth-child(2) { width: 360px; height: 360px; top:50%; left:50%; transform:translate(-50%,-50%); border-color:rgba(255,0,170,0.08); animation-duration:18s; animation-direction:reverse; }
+    .orbit-ring:nth-child(2)::before { background:var(--m); box-shadow:0 0 12px var(--m); }
+    .orbit-ring:nth-child(3) { width: 460px; height: 460px; top:50%; left:50%; transform:translate(-50%,-50%); border-color:rgba(123,47,255,0.07); animation-duration:25s; }
+    .orbit-ring:nth-child(3)::before { background:var(--v); box-shadow:0 0 12px var(--v); }
+    @keyframes orbitSpin { from{rotate:0deg;} to{rotate:360deg;} }
+
+    .system-status {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: rgba(0,255,231,0.5);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      position: relative;
+      z-index: 2;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      background: #00ff88;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00ff88, 0 0 16px #00ff88;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+    @keyframes statusPulse {
+      0%,100% { transform:scale(1); opacity:1; }
+      50%      { transform:scale(1.5); opacity:0.6; }
     }
 
-    .btn-outline:hover::before {
-      width: 300px;
-      height: 300px;
+    .hero-name {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.4rem, 7vw, 5.8rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1.0;
+      margin-bottom: 0.4rem;
+      position: relative;
+      z-index: 2;
+      color: #fff;
+      text-shadow: 0 0 30px rgba(0,255,231,0.4);
     }
 
-    .btn-outline:hover {
-      border-color: #00d4ff;
-      background: rgba(0, 212, 255, 0.1);
+    /* Animated underline bar */
+    .name-bar {
+      display: block;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--c), var(--m), var(--v), transparent);
+      border-radius: 2px;
+      margin: 0.5rem auto 1.8rem;
+      animation: barStretch 4s ease-in-out infinite;
+      box-shadow: 0 0 16px var(--c);
+      position: relative;
+      z-index: 2;
+    }
+    @keyframes barStretch {
+      0%,100% { width:120px; }
+      50%      { width:280px; box-shadow:0 0 24px var(--c), 0 0 40px var(--m); }
+    }
+
+    .hero-sub {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      color: rgba(204,232,255,0.5);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .typed-box {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--c);
+      min-height: 2.4rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 0 10px rgba(0,255,231,0.5);
+    }
+    .typed-box::before { content: '> '; opacity: 0.5; }
+    .t-cursor {
+      display: inline-block;
+      width: 8px; height: 1em;
+      background: var(--c);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: tBlink 0.7s step-end infinite;
+      box-shadow: 0 0 8px var(--c);
+    }
+    @keyframes tBlink { 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+
+    /* CTA buttons */
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+      z-index: 2;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      position: relative;
+      padding: 0.8rem 2.2rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--c);
+      border: none;
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(0,255,231,0.4);
+    }
+    .btn-primary:hover {
+      background: #fff;
+      box-shadow: 0 0 40px rgba(0,255,231,0.8), 0 0 80px rgba(0,255,231,0.3);
       transform: translateY(-3px);
     }
 
-    .section-title {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 2rem;
-      text-align: center;
-      background: linear-gradient(120deg, #fff, #7bc9ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+    .btn-ghost {
       position: relative;
-      display: inline-block;
-      width: 100%;
+      padding: 0.8rem 2.2rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--c);
+      background: transparent;
+      border: 1px solid rgba(0,255,231,0.4);
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: all 0.3s;
+    }
+    .btn-ghost:hover {
+      border-color: var(--c);
+      background: rgba(0,255,231,0.08);
+      box-shadow: 0 0 20px rgba(0,255,231,0.2), inset 0 0 20px rgba(0,255,231,0.05);
+      transform: translateY(-3px);
     }
 
-    .section-title::after {
+    /* ─────────── SECTION COMMON ─────────── */
+    .sec-head {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .sec-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--c);
+      opacity: 0.5;
+      letter-spacing: 0.1em;
+    }
+    .sec-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+    .sec-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(0,255,231,0.3);
+    }
+    .sec-title em {
+      font-style: normal;
+      color: var(--c);
+      text-shadow: 0 0 20px var(--c);
+    }
+    .sec-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      color: rgba(0,255,231,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ─────────── PANEL / CARD ─────────── */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s, box-shadow 0.4s;
+    }
+    .panel::before {
       content: '';
       position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, #00d4ff, #ff3b7c);
-      border-radius: 3px;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--c), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .panel:hover::before { opacity: 1; animation: scanLine 2s ease-in-out infinite; }
+    @keyframes scanLine {
+      0%,100% { opacity:0.4; transform:scaleX(0.5); }
+      50%      { opacity:1;   transform:scaleX(1); }
+    }
+    .panel:hover {
+      border-color: rgba(0,255,231,0.3);
+      box-shadow: 0 0 30px rgba(0,255,231,0.06), 0 20px 60px rgba(0,0,0,0.5);
     }
 
-    .about-content {
-      display: flex;
-      flex-wrap: wrap;
+    /* panel corner ornaments */
+    .panel .pc {
+      position: absolute;
+      width: 12px; height: 12px;
+    }
+    .panel .pc::before, .panel .pc::after {
+      content: '';
+      position: absolute;
+      background: var(--c);
+      opacity: 0.6;
+    }
+    .panel .pc::before { width: 1.5px; height: 100%; }
+    .panel .pc::after  { height: 1.5px; width: 100%; }
+    .panel .pc-tl { top: -1px; left: -1px; }
+    .panel .pc-tl::before { top:0; left:0; }
+    .panel .pc-tl::after  { top:0; left:0; }
+    .panel .pc-tr { top: -1px; right: -1px; }
+    .panel .pc-tr::before { top:0; right:0; left:auto; }
+    .panel .pc-tr::after  { top:0; right:0; left:auto; }
+    .panel .pc-bl { bottom: -1px; left: -1px; }
+    .panel .pc-bl::before { bottom:0; left:0; top:auto; }
+    .panel .pc-bl::after  { bottom:0; left:0; top:auto; }
+    .panel .pc-br { bottom: -1px; right: -1px; }
+    .panel .pc-br::before { bottom:0; right:0; left:auto; top:auto; }
+    .panel .pc-br::after  { bottom:0; right:0; left:auto; top:auto; }
+
+    /* ─────────── ABOUT ─────────── */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 200px;
       gap: 2rem;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
-      border-radius: 2rem;
       padding: 2rem;
-      border: 1px solid rgba(0, 212, 255, 0.2);
-      align-items: center;
-      transition: transform 0.3s ease;
+      border-radius: 2px;
     }
-
-    .about-content:hover {
-      transform: translateY(-5px);
-      border-color: rgba(0, 212, 255, 0.5);
-    }
-
-    .about-text {
-      flex: 2;
-    }
-
     .about-text p {
-      margin-bottom: 1rem;
       font-size: 1rem;
-      color: #d3e0ff;
+      line-height: 1.85;
+      color: rgba(204,232,255,0.65);
+      margin-bottom: 1rem;
+      font-weight: 400;
     }
+    .about-text p strong { color: var(--c); font-weight: 600; }
 
-    .about-image {
-      flex: 1;
+    .stat-row {
       display: flex;
-      justify-content: center;
-    }
-
-    .image-frame {
-      width: 100%;
-      max-width: 200px;
-      border-radius: 1.5rem;
-      overflow: hidden;
-      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.7);
-      border: 2px solid rgba(0, 212, 255, 0.4);
-      transition: all 0.3s ease;
-    }
-
-    .image-frame img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .image-frame:hover {
-      transform: scale(1.02) rotate(2deg);
-      border-color: #00d4ff;
-    }
-
-    .education-grid {
-      display: flex;
-      flex-direction: column;
       gap: 1.5rem;
-      max-width: 800px;
-      margin: 0 auto;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-val {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--c);
+      text-shadow: 0 0 16px var(--c);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(204,232,255,0.4);
+      margin-top: 0.2rem;
     }
 
-    .edu-card {
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
-      border-radius: 1.5rem;
-      padding: 1.3rem 1.8rem;
-      border: 1px solid rgba(0, 212, 255, 0.2);
-      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid rgba(0,255,231,0.2);
+      color: rgba(0,255,231,0.7);
+      background: rgba(0,255,231,0.04);
+      letter-spacing: 0.08em;
+    }
+
+    .photo-wrap {
+      position: relative;
+    }
+    .photo-frame {
+      width: 100%;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      border: 1px solid rgba(0,255,231,0.2);
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .photo-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,255,231,0.08) 0%, transparent 50%, rgba(255,0,170,0.05) 100%);
+      pointer-events: none;
+    }
+    .photo-frame img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+      filter: saturate(0.7) contrast(1.1);
+    }
+    .photo-frame:hover img { transform: scale(1.08); filter: saturate(1) contrast(1.1); }
+
+    /* Photo scan overlay */
+    .photo-frame::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--c), transparent);
+      z-index: 2;
+      animation: photoScan 3s linear infinite;
+      box-shadow: 0 0 12px var(--c);
+    }
+    @keyframes photoScan {
+      from { top: 0%; opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      to   { top: 100%; opacity: 0; }
+    }
+
+    .loc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: rgba(0,255,231,0.6);
+      border: 1px solid rgba(0,255,231,0.15);
+      padding: 0.3rem 0.7rem;
+      letter-spacing: 0.1em;
+      margin-top: 1rem;
+    }
+
+    /* ─────────── EDU ─────────── */
+    .edu-list { display: flex; flex-direction: column; gap: 1rem; max-width: 780px; margin: 0 auto; }
+
+    .edu-item {
       display: flex;
-      gap: 1.2rem;
-      align-items: flex-start;
+      gap: 1.5rem;
+      align-items: stretch;
+      padding: 1.3rem 1.5rem;
+      border-radius: 2px;
+      cursor: default;
+      transform-origin: left center;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), border-color 0.4s;
     }
+    .edu-item:hover { transform: translateX(16px) translateY(-4px) scale(1.01); }
 
-    .edu-card:hover {
-      transform: translateX(10px) translateY(-3px);
-      border-color: #00d4ff;
-      box-shadow: 0 10px 30px -8px rgba(0, 212, 255, 0.3);
+    .edu-year-col {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: rgba(0,255,231,0.4);
+      writing-mode: vertical-lr;
+      text-orientation: mixed;
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+      padding: 0 0.5rem;
+      border-right: 1px solid rgba(0,255,231,0.15);
+      transition: color 0.3s, border-color 0.3s;
     }
+    .edu-item:hover .edu-year-col { color: var(--c); border-color: rgba(0,255,231,0.4); }
+
+    .edu-body { flex: 1; }
+    .edu-school {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+    }
+    .edu-major {
+      font-size: 0.8rem;
+      color: var(--c);
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .edu-desc { font-size: 0.85rem; color: rgba(204,232,255,0.45); line-height: 1.6; }
 
     .edu-icon {
-      font-size: 2rem;
-      color: #00d4ff;
-      background: rgba(0, 212, 255, 0.1);
-      width: 50px;
-      height: 50px;
+      font-size: 1.8rem;
+      color: var(--c);
+      opacity: 0.4;
+      flex-shrink: 0;
+      transition: opacity 0.3s, transform 0.4s;
       display: flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 1.2rem;
-      transition: transform 0.3s;
     }
+    .edu-item:hover .edu-icon { opacity: 1; transform: scale(1.2) rotate(8deg); }
 
-    .edu-card:hover .edu-icon {
-      transform: scale(1.1) rotate(5deg);
-    }
-
+    /* ─────────── SKILLS ─────────── */
+    .skills-wrap { max-width: 860px; margin: 0 auto; }
     .skills-grid {
       display: flex;
       flex-wrap: wrap;
+      gap: 0.7rem;
       justify-content: center;
-      gap: 1rem;
-      max-width: 800px;
-      margin: 0 auto;
     }
 
-    .skill-card {
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
-      border-radius: 1.5rem;
-      padding: 0.9rem 1.5rem;
-      border: 1px solid rgba(0, 212, 255, 0.25);
-      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    .sk {
       display: flex;
       align-items: center;
       gap: 0.6rem;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid rgba(0,255,231,0.1);
+      background: rgba(0,255,231,0.025);
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
       cursor: pointer;
-    }
-
-    .skill-card i {
-      font-size: 1.5rem;
-      transition: transform 0.3s;
-    }
-
-    .skill-card .fa-html5 { color: #e34c26; }
-    .skill-card .fa-css3-alt { color: #264de4; }
-    .skill-card .fa-js { color: #f7df1e; }
-    .skill-card .fa-react { color: #61dafb; }
-    .skill-card .fa-node { color: #8cc84b; }
-    .skill-card .fa-python { color: #3776ab; }
-    .skill-card .fa-java { color: #f89820; }
-    .skill-card .fa-code { color: #00599c; }
-
-    .skill-card:hover {
-      transform: translateY(-5px) scale(1.05) rotateX(5deg);
-      border-color: #00d4ff;
-      box-shadow: 0 15px 25px -10px rgba(0, 212, 255, 0.4);
-    }
-
-    .skill-card:hover i {
-      transform: scale(1.2) rotate(10deg);
-    }
-
-    .timeline-compact {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .journey-item {
-      display: flex;
-      gap: 1.8rem;
-      margin-bottom: 2rem;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
-      border-radius: 1.5rem;
-      padding: 1.2rem;
-      border: 1px solid rgba(0, 212, 255, 0.15);
-      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      align-items: center;
-    }
-
-    .journey-item:hover {
-      border-color: #00d4ff;
-      background: rgba(0, 0, 0, 0.7);
-      transform: translateX(8px);
-    }
-
-    .journey-photo {
-      width: 140px;
-      height: 140px;
-      border-radius: 1rem;
+      position: relative;
       overflow: hidden;
-      flex-shrink: 0;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      cursor: pointer;
+    }
+    .sk::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,255,231,0.1), rgba(255,0,170,0.06));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .sk:hover::before { opacity: 1; }
+    .sk i { font-size: 1.2rem; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+    .sk:hover {
+      border-color: rgba(0,255,231,0.5);
+      color: #fff;
+      transform: translateY(-6px) scale(1.08);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 20px rgba(0,255,231,0.1);
+    }
+    .sk:hover i { transform: scale(1.3) rotate(12deg); filter: drop-shadow(0 0 6px currentColor); }
+
+    /* ─────────── JOURNEY ─────────── */
+    .journey-wrap { max-width: 900px; margin: 0 auto; }
+    .j-item {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 1.3rem;
+      padding: 1.4rem;
+      border-radius: 2px;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+    .j-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--c), var(--v));
+      transform: scaleY(0);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 0 8px var(--c);
+    }
+    .j-item:hover::before { transform: scaleY(1); }
+    .j-item:hover {
+      border-color: rgba(0,255,231,0.25) !important;
+      transform: translateX(12px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4), -8px 0 24px rgba(0,255,231,0.05);
     }
 
-    .journey-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    .j-photo {
+      width: 180px; height: 150px;
+      overflow: hidden;
+      border: 1px solid rgba(0,255,231,0.15);
+      position: relative;
+      transition: all 0.5s;
+    }
+    .j-photo img { width:100%; height:100%; object-fit:cover; transition: transform 0.6s; filter: saturate(0.6); }
+    .j-item:hover .j-photo { border-color: rgba(0,255,231,0.4); box-shadow: 0 0 20px rgba(0,255,231,0.15); }
+    .j-item:hover .j-photo img { transform: scale(1.12); filter: saturate(1); }
+    .j-photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,255,231,0.06), transparent);
+      pointer-events: none;
     }
 
-    .journey-photo:hover {
-      transform: scale(1.08);
-      box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+    .j-year {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--c);
+      border: 1px solid rgba(0,255,231,0.2);
+      padding: 0.15rem 0.6rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
     }
-
-    .journey-photo:hover img {
-      transform: scale(1.15);
+    .j-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
     }
+    .j-desc { font-size: 0.85rem; color: rgba(204,232,255,0.5); line-height: 1.7; }
 
-    .contact-links-single {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 500px;
-      margin: 2rem auto;
-    }
-
-    .contact-card {
+    /* ─────────── CONTACT ─────────── */
+    .contact-wrap { max-width: 520px; margin: 0 auto; }
+    .c-card {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 0.9rem 1.3rem;
-      border-radius: 2rem;
-      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      gap: 1.2rem;
+      padding: 1rem 1.4rem;
       text-decoration: none;
-      color: #f0f3ff;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      margin-bottom: 0.8rem;
+      border-radius: 2px;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .c-card::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 0;
+      background: linear-gradient(90deg, rgba(0,255,231,0.06), transparent);
+      transition: width 0.4s;
+    }
+    .c-card:hover::after { width: 100%; }
+    .c-card:hover {
+      border-color: rgba(0,255,231,0.35) !important;
+      transform: translateX(12px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
 
-    .contact-card:hover {
-      background: rgba(0, 212, 255, 0.15);
-      border-color: #00d4ff;
-      transform: translateX(10px) scale(1.02);
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    .c-icon {
+      width: 46px; height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0,255,231,0.15);
+      font-size: 1.2rem;
+      color: var(--c);
+      flex-shrink: 0;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
     }
+    .c-card:hover .c-icon { transform: scale(1.15) rotate(10deg); box-shadow: 0 0 16px rgba(0,255,231,0.3); }
+    .c-label { font-family:'Space Mono',monospace; font-size:0.58rem; color:rgba(204,232,255,0.35); letter-spacing:0.12em; text-transform:uppercase; }
+    .c-val { font-size:0.9rem; font-weight:600; letter-spacing:0.03em; }
+    .c-arr { margin-left:auto; color:rgba(204,232,255,0.2); font-size:0.8rem; transition:all 0.3s; }
+    .c-card:hover .c-arr { color: var(--c); transform: translateX(6px); text-shadow: 0 0 8px var(--c); }
 
-    .contact-card i {
-      font-size: 1.5rem;
-      width: 2rem;
-      color: #00d4ff;
-      transition: transform 0.3s;
-    }
-
-    .contact-card:hover i {
-      transform: rotate(15deg) scale(1.1);
-    }
-
+    /* ─────────── FOOTER ─────────── */
     footer {
       text-align: center;
-      padding: 1rem 0;
-      color: #5a6699;
-      font-size: 0.75rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      margin-top: 1.5rem;
+      padding: 1.2rem 0;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      color: rgba(0,255,231,0.2);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border-top: 1px solid rgba(0,255,231,0.06);
+      margin-top: 2rem;
     }
 
-    @media (max-width: 680px) {
-      .container { padding: 0 1.2rem; }
-      .nav-links { gap: 0.6rem; }
-      .nav-btn { font-size: 0.75rem; padding: 0.4rem 0.6rem; }
-      .nav-planet { width: 16px; height: 16px; }
-      .about-content { flex-direction: column; text-align: center; }
-      .about-image { order: -1; }
-      .edu-card { flex-direction: column; align-items: center; text-align: center; }
-      .journey-item { flex-direction: column; align-items: center; text-align: center; }
-      .journey-photo { width: 160px; height: 160px; margin: 0 auto; }
-      .big-planet-popup { width: 120px; height: 120px; }
+    /* ─────────── PAGE WIPE ─────────── */
+    .wipe {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 99995;
+      animation: wipeAnim 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes wipeAnim {
+      0%   { background: radial-gradient(ellipse at 50% 50%, rgba(0,255,231,0.25) 0%, transparent 40%); opacity:1; transform:scale(0.5); }
+      50%  { opacity:0.8; transform:scale(1.2); }
+      100% { opacity:0; transform:scale(2); }
+    }
+
+    /* ─────────── RESPONSIVE ─────────── */
+    @media(max-width:680px){
+      .about-layout { grid-template-columns:1fr; }
+      .photo-frame { max-height:200px; }
+      .j-item { grid-template-columns:1fr; }
+      .j-photo { width:100%; height:160px; }
+      .nav-btn .lbl { display:none; }
     }
   </style>
 </head>
 <body>
 
-<canvas id="galaxyCanvas"></canvas>
+<!-- BG -->
+<canvas id="bg-canvas"></canvas>
+<div class="vignette"></div>
+<div class="scanlines"></div>
 <div class="grain"></div>
 
-<div id="planetCursor">
-  <div class="planet-core"></div>
-  <div class="planet-ring"></div>
-</div>
+<!-- HUD -->
+<div class="hud-corner hud-tl"></div>
+<div class="hud-corner hud-tr"></div>
+<div class="hud-corner hud-bl"></div>
+<div class="hud-corner hud-br"></div>
+<div class="hud-status">SYSTEM:ONLINE &nbsp;|&nbsp; LOCATION:<span>DAVAO-Philippines</span> &nbsp;|&nbsp; STATUS:<span>AVAILABLE</span></div>
 
-<div class="container">
+<!-- CURSOR -->
+<div id="cur-cross"></div>
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<div class="shell">
   <nav>
-    <div class="logo">✦ JHAREL SERRANO ✦</div>
+    <div class="logo" data-text="✦ JS ✦.DEV">✦ JS ✦</div>
     <div class="nav-links">
-      <button class="nav-btn active" data-page="home"><span class="nav-planet"></span>Home</button>
-      <button class="nav-btn" data-page="about"><span class="nav-planet"></span>About</button>
-      <button class="nav-btn" data-page="education"><span class="nav-planet"></span>Education</button>
-      <button class="nav-btn" data-page="skills"><span class="nav-planet"></span>Skills</button>
-      <button class="nav-btn" data-page="journey"><span class="nav-planet"></span>Journey</button>
-      <button class="nav-btn" data-page="contact"><span class="nav-planet"></span>Connect</button>
+      <button class="nav-btn active" data-page="home"><span class="idx">01</span><span class="lbl">Home</span></button>
+      <button class="nav-btn" data-page="about"><span class="idx">02</span><span class="lbl">About</span></button>
+      <button class="nav-btn" data-page="education"><span class="idx">03</span><span class="lbl">Education</span></button>
+      <button class="nav-btn" data-page="skills"><span class="idx">04</span><span class="lbl">Skills</span></button>
+      <button class="nav-btn" data-page="journey"><span class="idx">05</span><span class="lbl">Journey</span></button>
+      <button class="nav-btn" data-page="contact"><span class="idx">06</span><span class="lbl">Connect</span></button>
     </div>
   </nav>
 
-  <div class="main-content">
-    <div id="home-page" class="page active-page">
+  <div class="main" id="main">
+
+    <!-- HOME -->
+    <div id="home-page" class="page active">
       <div class="hero">
-        <div class="badge">
-          <i class="fas fa-bolt" style="margin-right: 6px;"></i> APP & WEB DEVELOPMENT
+        <div class="orbit-ring"></div>
+        <div class="orbit-ring"></div>
+        <div class="orbit-ring"></div>
+
+        <div class="system-status">
+          <span class="status-dot"></span>
+          App &amp; Web Development
         </div>
-        <h1 class="glitch-name">Jharel Serrano</h1>
-        <div class="typed-text" id="typedText"></div>
-        <button class="btn-outline" id="exploreBtn"><i class="fas fa-paper-plane"></i> Explore My Work</button>
+        <h1 class="hero-name">JHAREL SERRANO</h1>
+        <span class="name-bar"></span>
+        <div class="hero-sub">Bachelor of Tech-Voc Teacher Ed &bull; Computer Programming</div>
+        <div class="typed-box" id="typedEl"><span class="t-cursor"></span></div>
+        <div class="hero-btns">
+          <button class="btn-primary" id="exploreBtn"><i class="fas fa-terminal" style="margin-right:0.5rem"></i>EXPLORE.EXE</button>
+          <button class="btn-ghost" data-page="contact"><i class="fas fa-satellite-dish" style="margin-right:0.5rem"></i>CONTACT ME</button>
+        </div>
       </div>
-      <footer>
-        <p>✦ Available for collaborations & creative direction ✦</p>
-      </footer>
+      <footer>&copy; 2025 JHAREL B. SERRANO &nbsp;·&nbsp; ALL RIGHTS RESERVED &nbsp;·&nbsp; DAVAO CITY, PHILIPPINES</footer>
     </div>
 
+    <!-- ABOUT -->
     <div id="about-page" class="page">
-      <h2 class="section-title">✦ The Human Behind <span style="color:#00d4ff;">The Code</span> ✦</h2>
-      <div class="about-content">
+      <div class="sec-head">
+        <span class="sec-num">// 02</span>
+        <div class="sec-line"></div>
+        <h2 class="sec-title"><em>PROFILE</em></h2>
+      </div>
+      <div class="about-layout panel">
+        <span class="pc pc-tl"></span><span class="pc pc-tr"></span>
+        <span class="pc pc-bl"></span><span class="pc pc-br"></span>
         <div class="about-text">
-          <p>My name is Jharel B. Serrano, and I am a 24-year-old student from City College of Davao, currently taking up Bachelor of Technical-Vocational Teacher Education major in Computer Programming (BTVTED-CP).</p>
-          <p>My goal in life is to finish my education and become a professional who can inspire others through teaching and technology. I dream of using my programming knowledge to create projects that help people and improve systems in schools and communities.</p>
-          <p>With 1 year of experience in web development, I've worked with various technologies and frameworks. When I'm not coding, I enjoy Online Games, Reading Manhwa, and Basketball.</p>
-          <p><i class="fas fa-map-marker-alt" style="color:#00d4ff; margin-right: 6px;"></i> Davao City, Philippines</p>
+          <h2 class="section-title">The Human Behind <em>The Code</em></h2>
+          <p>My name is <strong>Jharel B. Serrano</strong>, a 24-year-old student from <strong>City College of Davao</strong> — BTVTED major in Computer Programming. I build things for the web and teach through technology.</p>
+          <p>My goal is to become a professional who can <strong>inspire others</strong> through code and pedagogy. I dream of creating systems that help people and uplift schools and communities across the Philippines.</p>
+          <p>Outside the terminal: <strong>Online Games</strong> · <strong>Reading Manhwa</strong> · <strong>Basketball</strong></p>
+          <div class="stat-row">
+            <div class="stat-item"><div class="stat-val">1+</div><div class="stat-label">Years Exp</div></div>
+            <div class="stat-item"><div class="stat-val">24</div><div class="stat-label">Age</div></div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">web-dev</span>
+            <span class="tag">Future Educator</span>
+            <span class="tag">open-to-collab</span>
+          </div>
+          <div class="loc-badge"><i class="fas fa-map-marker-alt"></i> DAVAO CITY, PHILIPPINES </div>
         </div>
-        <div class="about-image">
-          <div class="image-frame">
-            <img src="imageprof.png" alt="Jharel Serrano portrait" loading="lazy">
+        <div class="photo-wrap">
+          <div class="photo-frame">
+            <img src="imageprof.png" alt="Jharel Serrano">
           </div>
         </div>
       </div>
     </div>
 
+    <!-- EDU -->
     <div id="education-page" class="page">
-      <h2 class="section-title">📖 Academic <span style="color:#00d4ff;">Journey</span></h2>
-      <div class="education-grid">
-        <div class="edu-card">
-          <div class="edu-icon"><i class="fas fa-university"></i></div>
-          <div class="edu-details">
-            <h3>City College of Davao</h3>
+      <div class="sec-head">
+        <span class="sec-num">// 03</span>
+        <div class="sec-line"></div>
+        <h2 class="sec-title"><em>EDUCATION</em></h2>
+      </div>
+      <div class="edu-list">
+        <div class="edu-item panel">
+          <span class="pc pc-tl"></span><span class="pc pc-tr"></span>
+          <div class="edu-year-col">2023 — PRESENT</div>
+          <div class="edu-body">
+            <div class="edu-school">CITY COLLEGE OF DAVAO</div>
             <div class="edu-major">BTVTED — Computer Programming</div>
-            <div class="edu-date"><i class="far fa-calendar-alt"></i> 2023 – Present</div>
-            <div class="edu-desc">Full-stack development, database management, and educational technology. Pursuing a degree blending programming and pedagogy.</div>
+            <div class="edu-desc">Full-stack development, database management, and educational technology. Pursuing a degree that bridges programming and pedagogy.</div>
           </div>
+          <div class="edu-icon"><i class="fas fa-university"></i></div>
         </div>
-        <div class="edu-card">
+        <div class="edu-item panel">
+          <span class="pc pc-tl"></span><span class="pc pc-tr"></span>
+          <div class="edu-year-col">2020 — 2022</div>
+          <div class="edu-body">
+            <div class="edu-school">DON ENRIQUE BUSTAMANTE NHS</div>
+            <div class="edu-major">General Academic Strand (GAS)</div>
+            <div class="edu-desc">Graduated with honors. Built the academic foundation that drives everything forward.</div>
+          </div>
           <div class="edu-icon"><i class="fas fa-school"></i></div>
-          <div class="edu-details">
-            <h3>Don Enrique Bustamante NHS</h3>
-            <div class="edu-major">GAS (General Academic Strand)</div>
-            <div class="edu-date"><i class="far fa-calendar-alt"></i> 2020 – 2022</div>
-            <div class="edu-desc">Graduated with honors.</div>
-          </div>
         </div>
       </div>
     </div>
 
+    <!-- SKILLS -->
     <div id="skills-page" class="page">
-      <h2 class="section-title">🧠 My <span style="color:#00d4ff;">Skills</span></h2>
-      <div class="skills-grid">
-        <div class="skill-card"><i class="fab fa-html5"></i> HTML</div>
-        <div class="skill-card"><i class="fab fa-css3-alt"></i> CSS</div>
-        <div class="skill-card"><i class="fab fa-js"></i> JavaScript</div>
-        <div class="skill-card"><i class="fab fa-react"></i> React.js</div>
-        <div class="skill-card"><i class="fab fa-node"></i> Node.js</div>
-        <div class="skill-card"><i class="fab fa-python"></i> Python</div>
-        <div class="skill-card"><i class="fab fa-java"></i> Java</div>
-        <div class="skill-card"><i class="fas fa-code"></i> C++</div>
+      <div class="sec-head">
+        <span class="sec-num">// 04</span>
+        <div class="sec-line"></div>
+        <h2 class="sec-title"><em>SKILLS</em>.STACK</h2>
+      </div>
+      <div class="skills-wrap">
+        <div class="skills-grid">
+          <div class="sk"><i class="fab fa-html5" style="color:#e34c26"></i> HTML5</div>
+          <div class="sk"><i class="fab fa-css3-alt" style="color:#2965f1"></i> CSS3</div>
+          <div class="sk"><i class="fab fa-js" style="color:#f7df1e"></i> JavaScript</div>
+          <div class="sk"><i class="fab fa-react" style="color:#61dafb"></i> React.js</div>
+          <div class="sk"><i class="fab fa-node" style="color:#3c873a"></i> Node.js</div>
+          <div class="sk"><i class="fab fa-python" style="color:#4b8bbe"></i> Python</div>
+          <div class="sk"><i class="fab fa-java" style="color:#f89820"></i> Java</div>
+          <div class="sk"><i class="fas fa-code" style="color:var(--c)"></i> C++</div>
+          <div class="sk"><i class="fas fa-database" style="color:#f29111"></i> SQL</div>
+          <div class="sk"><i class="fab fa-git-alt" style="color:#f05032"></i> Git</div>
+        </div>
       </div>
     </div>
 
+    <!-- JOURNEY -->
     <div id="journey-page" class="page">
-      <h2 class="section-title">📸 My <span style="color:#00d4ff;">Journey</span></h2>
-      <div class="timeline-compact">
-        <div class="journey-item">
-          <div class="journey-photo">
+      <div class="sec-head">
+        <span class="sec-num">// 05</span>
+        <div class="sec-line"></div>
+        <h2 class="sec-title"><em>TIMELINE</em></h2>
+      </div>
+      <div class="journey-wrap">
+        <div class="j-item panel">
+          <span class="pc pc-tl"></span><span class="pc pc-tr"></span>
+          <div class="j-photo">
             <img src="https://scontent.fmnl8-4.fna.fbcdn.net/v/t1.6435-9/69227800_155106965554440_2753081776267067392_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeG7LQ_W8edca6gnTCFDZGwWBc_oZ7--7I8Fz-hnv77sj3WTtUha8bmO57xVoVx-2XzRI2T0O2J3to_lZMlsLjDK&_nc_ohc=U6SXJ6kd2aoQ7kNvwEsX4W3&_nc_oc=AdqL0uj1dvKnNFiFN4FP0MMDE_MDf_qu9UjxyhZpSxYbCCCvpcyuyunbZ5XhQNt6IRs&_nc_zt=23&_nc_ht=scontent.fmnl8-4.fna&_nc_gid=EypKZlRyn65pIXJgM5ij5w&_nc_ss=7a2a8&oh=00_Af4ZvPeGNGAQzpLfdW_j1xE9G47xbzOt9bAUkFGYcO_iHw&oe=6A3CB17F" alt="High School">
           </div>
-          <div class="journey-text">
-            <span class="journey-year">2020 – 2022</span>
-            <h3>🏫 High School Days</h3>
-            <p>Graduated with honors from Don Enrique Bustamante NHS.</p>
+          <div class="j-text">
+            <div class="j-year">2020 — 2022</div>
+            <div class="j-title">HIGH SCHOOL DAYS</div>
+            <div class="j-desc">Graduated with honors from Don Enrique Bustamante NHS. The foundation of curiosity and discipline that drives everything forward.</div>
           </div>
         </div>
-        <div class="journey-item">
-          <div class="journey-photo">
+        <div class="j-item panel">
+          <span class="pc pc-tl"></span><span class="pc pc-tr"></span>
+          <div class="j-photo">
             <img src="https://scontent.fmnl8-1.fna.fbcdn.net/v/t39.30808-6/473416551_122218421378032151_4322361603138092870_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeGwON7ba8-x1HDIdl1ZsqWQ-ZKBTqnEbH75koFOqcRsfvAvSjNpJp92F2rFfbQdSoy3fD0Q1Pb1sabbToFXUR4F&_nc_ohc=1LA6TkT9IOcQ7kNvwFL6j-h&_nc_oc=AdokEf0fcBsIpV2ku810c9Fgj5raFhXYfX-3KKcIS13pA_VX36KeGJr1uxlr3Xt8anE&_nc_zt=23&_nc_ht=scontent.fmnl8-1.fna&_nc_gid=NJ2uZ-94j-2FM56EtcQhPw&_nc_ss=7a2a8&oh=00_Af4C-k05IWd6DNoEYfLLyRrBtB8Fh3oDyo5gc7sljxW8CQ&oe=6A1B1071" alt="College">
           </div>
-          <div class="journey-text">
-            <span class="journey-year">2023 – Present</span>
-            <h3>🎓 College Life at CCD</h3>
-            <p>Currently pursuing BTVTED-CP at City College of Davao. Immersed in full-stack development, database management, and educational tech.</p>
+          <div class="j-text">
+            <div class="j-year">2023 — PRESENT</div>
+            <div class="j-title">COLLEGE LIFE @ CCD</div>
+            <div class="j-desc">Pursuing BTVTED-CP at City College of Davao. Deep in full-stack development, database systems, and educational technology.</div>
           </div>
         </div>
-        <div class="journey-item">
-          <div class="journey-photo">
-            <img src="imagefut.png" alt="Future">
+        <div class="j-item panel">
+          <span class="pc pc-tl"></span><span class="pc pc-tr"></span>
+          <div class="j-photo">
+            <img src="imagefut.png" alt="Future" style="object-position:center;">
           </div>
-          <div class="journey-text">
-            <span class="journey-year">2025 & Beyond</span>
-            <h3>🚀 The Future Ahead</h3>
-            <p>Aspiring to inspire through teaching and technology. Creating impactful systems for schools and communities.</p>
+          <div class="j-text">
+            <div class="j-year">2025 — BEYOND</div>
+            <div class="j-title">THE FUTURE AHEAD</div>
+            <div class="j-desc">Aspiring to inspire through teaching and technology. Building systems that uplift schools and communities across the Philippines.</div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- CONTACT -->
     <div id="contact-page" class="page">
-      <h2 class="section-title">🤝 Let's <span style="color:#00d4ff;">Connect</span></h2>
-      <div class="contact-links-single">
-        <a href="https://github.com/jharelbalasabasserrano-dev" class="contact-card"><i class="fab fa-github"></i> <span>/jharelbalasabasserrano-dev</span></a>
-        <a href="#" class="contact-card"><i class="fab fa-facebook"></i> <span>Jharel Serrano</span></a>
-        <a href="#" class="contact-card"><i class="fas fa-envelope"></i> <span>jharelbalasabas.serrano@ccd.edu.ph</span></a>
+      <div class="sec-head">
+        <span class="sec-num">// 06</span>
+        <div class="sec-line"></div>
+        <h2 class="sec-title"><em>CONNECT</em></h2>
+      </div>
+      <div class="contact-wrap">
+        <a href="https://github.com/jharelbalasabasserrano-dev" class="c-card panel">
+          <span class="pc pc-tl"></span>
+          <div class="c-icon"><i class="fab fa-github"></i></div>
+          <div><div class="c-label">GitHub</div><div class="c-val">jharelbalasabasserrano-dev</div></div>
+          <span class="c-arr">→</span>
+        </a>
+        <a href="#" class="c-card panel">
+          <span class="pc pc-tl"></span>
+          <div class="c-icon" style="color:#1877f2;border-color:rgba(24,119,242,0.2)"><i class="fab fa-facebook"></i></div>
+          <div><div class="c-label">Facebook</div><div class="c-val">Jharel Serrano</div></div>
+          <span class="c-arr">→</span>
+        </a>
+        <a href="mailto:jharelbalasabas.serrano@ccd.edu.ph" class="c-card panel">
+          <span class="pc pc-tl"></span>
+          <div class="c-icon" style="color:#ea4335;border-color:rgba(234,67,53,0.2)"><i class="fas fa-envelope"></i></div>
+          <div><div class="c-label">Email</div><div class="c-val">jharelbalasabas.serrano@ccd.edu.ph</div></div>
+          <span class="c-arr">→</span>
+        </a>
       </div>
     </div>
-  </div>
-</div>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
 
 <script>
-  (function() {
-    // ========== BIG PLANET POPUP ON NAV CLICK ==========
-    function showBigPlanet(planetColor, ringColor) {
-      const existingPopup = document.querySelector('.big-planet-popup');
-      if (existingPopup) existingPopup.remove();
-      
-      const popup = document.createElement('div');
-      popup.className = 'big-planet-popup';
-      
-      const core = document.createElement('div');
-      core.className = 'big-core';
-      core.style.background = planetColor;
-      core.style.boxShadow = `0 0 30px ${ringColor}`;
-      
-      const ring = document.createElement('div');
-      ring.className = 'big-ring';
-      ring.style.border = `2px solid ${ringColor}`;
-      ring.style.boxShadow = `0 0 15px ${ringColor}`;
-      
-      core.appendChild(ring);
-      popup.appendChild(core);
-      document.body.appendChild(popup);
-      
-      setTimeout(() => {
-        if (popup && popup.remove) popup.remove();
-      }, 800);
-    }
-    
-    const planetColors = {
-      home: { core: 'radial-gradient(circle at 35% 35%, #ffaa44, #ff6600)', ring: '#ffaa44' },
-      about: { core: 'radial-gradient(circle at 35% 35%, #44aaff, #0066ff)', ring: '#44aaff' },
-      education: { core: 'radial-gradient(circle at 35% 35%, #88ff88, #00aa44)', ring: '#88ff88' },
-      skills: { core: 'radial-gradient(circle at 35% 35%, #ff88ff, #aa00aa)', ring: '#ff88ff' },
-      journey: { core: 'radial-gradient(circle at 35% 35%, #88ddff, #0088cc)', ring: '#88ddff' },
-      contact: { core: 'radial-gradient(circle at 35% 35%, #ffaa88, #cc4400)', ring: '#ffaa88' }
-    };
-    
-    // PLANET CURSOR
-    const planetCursor = document.getElementById('planetCursor');
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      createTrail(e.clientX, e.clientY);
-    });
-    
-    function createTrail(x, y) {
-      const trail = document.createElement('div');
-      trail.className = 'cursor-trail';
-      trail.style.left = x + 'px';
-      trail.style.top = y + 'px';
-      document.body.appendChild(trail);
-      setTimeout(() => trail.remove(), 800);
-    }
-    
-    function animateCursor() {
-      cursorX += (mouseX - cursorX) * 0.2;
-      cursorY += (mouseY - cursorY) * 0.2;
-      planetCursor.style.left = cursorX + 'px';
-      planetCursor.style.top = cursorY + 'px';
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-    
-    const interactiveElements = document.querySelectorAll('button, a, .skill-card, .contact-card, .nav-btn, .journey-photo, .btn-outline');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        planetCursor.style.width = '48px';
-        planetCursor.style.height = '48px';
-        planetCursor.style.filter = 'drop-shadow(0 0 15px rgba(0, 212, 255, 1))';
-      });
-      el.addEventListener('mouseleave', () => {
-        planetCursor.style.width = '32px';
-        planetCursor.style.height = '32px';
-        planetCursor.style.filter = 'drop-shadow(0 0 8px rgba(0, 212, 255, 0.8))';
-      });
-    });
-    
-    // ========== REAL GALAXY BACKGROUND WITH REALISTIC PLANETS ==========
-    const canvas = document.getElementById('galaxyCanvas');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-    let dustParticles = [];
-    let shootingStars = [];
-    let planets = [];
-    let spiralArms = [];
-    
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initGalaxy();
-    }
-    
-    function initGalaxy() {
-      stars = [];
-      dustParticles = [];
-      planets = [];
-      
-      // Generate thousands of stars with varying sizes and brightness
-      for (let i = 0; i < 2500; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          radius: Math.random() * 2.2 + 0.3,
-          alpha: Math.random() * 0.7 + 0.2,
-          twinkleSpeed: Math.random() * 0.015 + 0.003,
-          twinkleDir: Math.random() > 0.5 ? 1 : -1,
-          color: `hsl(${Math.random() * 60 + 200}, ${Math.random() * 50 + 30}%, ${Math.random() * 30 + 60}%)`
-        });
-      }
-      
-      // Create cosmic dust / nebula particles
-      for (let i = 0; i < 200; i++) {
-        dustParticles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          radius: Math.random() * 3 + 1,
-          alpha: Math.random() * 0.15 + 0.02,
-          color: `hsla(${Math.random() * 360}, 70%, 50%, ${Math.random() * 0.1 + 0.02})`
-        });
-      }
-      
-      // Create realistic-looking planets with textures
-      planets.push({
-        x: canvas.width * 0.82,
-        y: canvas.height * 0.18,
-        radius: 65,
-        color1: '#d4a574',
-        color2: '#8b5e3c',
-        color3: '#c49a6c',
-        hasRing: true,
-        ringColor: 'rgba(180, 140, 100, 0.5)',
-        ringColor2: 'rgba(200, 160, 120, 0.3)',
-        rotation: 0,
-        rotationSpeed: 0.0015,
-        atmosphere: 'rgba(210, 180, 140, 0.15)',
-        name: 'Saturn-like'
-      });
-      
-      planets.push({
-        x: canvas.width * 0.12,
-        y: canvas.height * 0.73,
-        radius: 48,
-        color1: '#7a9bcb',
-        color2: '#3a6ea5',
-        color3: '#5a8dbd',
-        hasRing: false,
-        rotation: 0,
-        rotationSpeed: 0.002,
-        atmosphere: 'rgba(100, 150, 200, 0.2)',
-        name: 'Neptune-like'
-      });
-      
-      planets.push({
-        x: canvas.width * 0.45,
-        y: canvas.height * 0.88,
-        radius: 38,
-        color1: '#d4835a',
-        color2: '#a55a3a',
-        color3: '#c47a52',
-        hasRing: false,
-        rotation: 0,
-        rotationSpeed: 0.0025,
-        atmosphere: 'rgba(200, 130, 80, 0.12)',
-        name: 'Mars-like'
-      });
-      
-      planets.push({
-        x: canvas.width * 0.18,
-        y: canvas.height * 0.12,
-        radius: 30,
-        color1: '#b8c8d8',
-        color2: '#8a9aaa',
-        color3: '#a8b8c8',
-        hasRing: false,
-        rotation: 0,
-        rotationSpeed: 0.003,
-        atmosphere: 'rgba(200, 220, 240, 0.1)',
-        name: 'Moon-like'
-      });
-      
-      planets.push({
-        x: canvas.width * 0.72,
-        y: canvas.height * 0.68,
-        radius: 55,
-        color1: '#6a9a7a',
-        color2: '#3a6a4a',
-        color3: '#5a8a6a',
-        hasRing: true,
-        ringColor: 'rgba(100, 160, 120, 0.4)',
-        ringColor2: 'rgba(120, 180, 140, 0.25)',
-        rotation: 0,
-        rotationSpeed: 0.0018,
-        atmosphere: 'rgba(80, 140, 100, 0.18)',
-        name: 'Earth-like'
-      });
-      
-      planets.push({
-        x: canvas.width * 0.35,
-        y: canvas.height * 0.35,
-        radius: 22,
-        color1: '#d8b878',
-        color2: '#b89858',
-        color3: '#c8a868',
-        hasRing: false,
-        rotation: 0,
-        rotationSpeed: 0.004,
-        atmosphere: 'rgba(220, 200, 120, 0.08)',
-        name: 'Small rocky'
-      });
-    }
-    
-    function drawPlanetWithTexture(planet) {
-      planet.rotation += planet.rotationSpeed;
-      
-      ctx.save();
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-      
-      // Draw planet body with realistic gradient
-      const gradient = ctx.createRadialGradient(
-        planet.x - planet.radius * 0.25,
-        planet.y - planet.radius * 0.25,
-        5,
-        planet.x,
-        planet.y,
-        planet.radius
-      );
-      gradient.addColorStop(0, planet.color1);
-      gradient.addColorStop(0.5, planet.color2);
-      gradient.addColorStop(1, planet.color3);
-      
-      ctx.beginPath();
-      ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      
-      // Add surface details (craters/bands)
-      ctx.beginPath();
-      ctx.arc(planet.x - planet.radius * 0.3, planet.y - planet.radius * 0.2, planet.radius * 0.25, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0, 0, 0, 0.15)`;
-      ctx.fill();
-      
-      ctx.beginPath();
-      ctx.arc(planet.x + planet.radius * 0.2, planet.y + planet.radius * 0.15, planet.radius * 0.18, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0, 0, 0, 0.1)`;
-      ctx.fill();
-      
-      // Add highlight
-      ctx.beginPath();
-      ctx.arc(planet.x - planet.radius * 0.15, planet.y - planet.radius * 0.15, planet.radius * 0.12, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, 0.25)`;
-      ctx.fill();
-      
-      // Add atmosphere glow
-      ctx.beginPath();
-      ctx.arc(planet.x, planet.y, planet.radius + 3, 0, Math.PI * 2);
-      ctx.fillStyle = planet.atmosphere;
-      ctx.fill();
-      
-      // Draw ring if planet has one
-      if (planet.hasRing) {
-        ctx.beginPath();
-        ctx.ellipse(planet.x, planet.y, planet.radius * 1.5, planet.radius * 0.4, planet.rotation, 0, Math.PI * 2);
-        ctx.fillStyle = planet.ringColor;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(planet.x, planet.y, planet.radius * 1.6, planet.radius * 0.45, planet.rotation + 0.3, 0, Math.PI * 2);
-        ctx.fillStyle = planet.ringColor2;
-        ctx.fill();
-      }
-      
+(function(){
+'use strict';
+
+// ─── CURSOR ───────────────────────────────────────────────────────────────
+const cross = document.getElementById('cur-cross');
+const dot   = document.getElementById('cur-dot');
+const ring  = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0,trailT=0;
+
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cross.style.left=mx+'px'; cross.style.top=my+'px';
+  dot.style.left=mx+'px'; dot.style.top=my+'px';
+  if(Date.now()-trailT>35){ spawnTrail(mx,my); trailT=Date.now(); }
+});
+
+(function animRing(){
+  rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.querySelectorAll('button,a,.sk,.edu-item,.j-item,.c-card,.panel').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('over'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('over'));
+});
+
+function spawnTrail(x,y){
+  const el=document.createElement('div');
+  const s=Math.random()*5+2;
+  const h=Math.random()>0.5?174:316;
+  el.className='trail';
+  el.style.cssText=`left:${x}px;top:${y}px;width:${s}px;height:${s}px;background:hsl(${h},100%,60%);`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),800);
+}
+
+document.addEventListener('click',e=>burst(e.clientX,e.clientY));
+
+function burst(x,y,count=20){
+  for(let i=0;i<count;i++){
+    const el=document.createElement('div');
+    const angle=(Math.PI*2*i)/count;
+    const v=Math.random()*90+30;
+    const s=Math.random()*5+2;
+    const h=Math.random()>0.5?174:316;
+    el.style.cssText=`position:fixed;left:${x}px;top:${y}px;width:${s}px;height:${s}px;border-radius:50%;
+      background:hsl(${h},100%,65%);pointer-events:none;z-index:99997;
+      box-shadow:0 0 ${s*2}px hsl(${h},100%,65%);`;
+    document.body.appendChild(el);
+    el.animate([
+      {transform:'translate(-50%,-50%) scale(1)',opacity:1},
+      {transform:`translate(calc(-50% + ${Math.cos(angle)*v}px),calc(-50% + ${Math.sin(angle)*v}px)) scale(0)`,opacity:0}
+    ],{duration:600+Math.random()*400,easing:'cubic-bezier(0,0.9,0.57,1)',fill:'forwards'}).onfinish=()=>el.remove();
+  }
+  // ring pulse
+  const r=document.createElement('div');
+  r.style.cssText=`position:fixed;left:${x}px;top:${y}px;border:1.5px solid rgba(0,255,231,0.8);border-radius:50%;pointer-events:none;z-index:99996;`;
+  document.body.appendChild(r);
+  r.animate([
+    {width:'0px',height:'0px',opacity:1,transform:'translate(-50%,-50%)'},
+    {width:'180px',height:'180px',opacity:0,transform:'translate(-50%,-50%)'}
+  ],{duration:700,easing:'ease-out',fill:'forwards'}).onfinish=()=>r.remove();
+}
+
+// ─── CANVAS BG ────────────────────────────────────────────────────────────
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,stars=[],nebulae=[],bps=[],shots=[],comets=[],warpLines=[];
+let constellationPts=[],mouseConstX=W/2,mouseConstY=H/2;
+
+document.addEventListener('mousemove',e=>{ mouseConstX=e.clientX; mouseConstY=e.clientY; });
+
+function resize(){
+  W=canvas.width=window.innerWidth;
+  H=canvas.height=window.innerHeight;
+  init();
+}
+
+function init(){
+  stars=[]; nebulae=[]; bps=[]; warpLines=[]; constellationPts=[];
+
+  // Star field — 4 layers
+  for(let i=0;i<200;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:0.35,a:Math.random(),s:0.005+Math.random()*0.008,d:1,c:'255,255,255'});
+  for(let i=0;i<300;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*0.9+0.4,a:Math.random(),s:0.008+Math.random()*0.012,d:Math.random()>0.5?1:-1,c:Math.random()>0.8?'180,220,255':'255,255,255'});
+  for(let i=0;i<80;i++){
+    const h=[174,316,60][Math.floor(Math.random()*3)];
+    stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+1,a:Math.random()*0.5+0.3,s:0.015+Math.random()*0.02,d:Math.random()>0.5?1:-1,h,c:null});
+  }
+  // Cross-sparkle stars
+  for(let i=0;i<20;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+1.5,a:Math.random()*0.4+0.5,s:0.01+Math.random()*0.015,d:1,c:'255,255,255',cross:true});
+
+  // Nebulae
+  for(let i=0;i<12;i++) nebulae.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*240+80,h:Math.random()*80+160,a:Math.random()*0.07+0.018,vx:(Math.random()-.5)*0.12,vy:(Math.random()-.5)*0.12});
+
+  // Warp lines
+  for(let i=0;i<80;i++) warpLines.push({x:Math.random()*W,y:Math.random()*H,len:Math.random()*80+10,a:Math.random()*0.06+0.01,spd:Math.random()*0.4+0.06});
+
+  // Constellation points (mouse-interactive)
+  for(let i=0;i<18;i++) constellationPts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*0.25,vy:(Math.random()-.5)*0.25,r:Math.random()*2+1.5});
+
+  // Planets
+  const pd=[
+    {px:W*0.88,py:H*0.17,r:55,c1:'#ff9944',c2:'#cc4411',ring:'rgba(255,153,68,0.45)',hasRing:true},
+    {px:W*0.07,py:H*0.73,r:42,c1:'#44aaff',c2:'#2255cc',ring:'rgba(68,170,255,0.35)',hasRing:true},
+    {px:W*0.5, py:H*0.9, r:28,c1:'#55ff99',c2:'#22aa55',ring:null,hasRing:false},
+    {px:W*0.16,py:H*0.11,r:20,c1:'#ff77ff',c2:'#aa33bb',ring:null,hasRing:false},
+    {px:W*0.77,py:H*0.67,r:48,c1:'#66ddff',c2:'#2299bb',ring:'rgba(102,221,255,0.3)',hasRing:true},
+  ];
+  pd.forEach(p=>bps.push({...p,rot:0,rs:0.002+Math.random()*0.003}));
+  // Moons
+  bps.push({px:0,py:0,r:9,c1:'#ddddcc',c2:'#999988',ring:null,hasRing:false,rot:0,rs:0.01,orbit:{cx:W*0.88,cy:H*0.17,r:52,s:0.009,a:0}});
+  bps.push({px:0,py:0,r:6,c1:'#bbbbdd',c2:'#7777aa',ring:null,hasRing:false,rot:0,rs:0.015,orbit:{cx:W*0.07,cy:H*0.73,r:36,s:0.013,a:1.8}});
+}
+
+function frame(){
+  // BG
+  ctx.fillStyle='rgba(1,2,8,1)';
+  ctx.fillRect(0,0,W,H);
+
+  // Aurora beams
+  const T=Date.now()*0.0004;
+  for(let i=0;i<3;i++){
+    const bx=W*(0.2+i*0.3)+Math.sin(T+i)*60;
+    const g=ctx.createLinearGradient(bx-60,0,bx+60,H);
+    const colors=['rgba(0,255,180,','rgba(0,150,255,','rgba(120,0,255,'];
+    g.addColorStop(0,colors[i]+'0)');
+    g.addColorStop(0.3,colors[i]+'0.015)');
+    g.addColorStop(0.5,colors[i]+'0.025)');
+    g.addColorStop(0.7,colors[i]+'0.015)');
+    g.addColorStop(1,colors[i]+'0)');
+    ctx.fillStyle=g;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // Nebulae
+  nebulae.forEach(n=>{
+    const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);
+    g.addColorStop(0,`hsla(${n.h},80%,50%,${n.a*1.2})`);
+    g.addColorStop(0.5,`hsla(${n.h+30},70%,38%,${n.a})`);
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+    n.x+=n.vx; n.y+=n.vy;
+    if(n.x<-n.r)n.x=W+n.r; if(n.x>W+n.r)n.x=-n.r;
+    if(n.y<-n.r)n.y=H+n.r; if(n.y>H+n.r)n.y=-n.r;
+  });
+
+  // Planets
+  bps.forEach(p=>{
+    if(p.orbit){ p.orbit.a+=p.orbit.s; p.px=p.orbit.cx+Math.cos(p.orbit.a)*p.orbit.r; p.py=p.orbit.cy+Math.sin(p.orbit.a)*p.orbit.r; }
+    else { p.rot+=p.rs; }
+
+    const atm=ctx.createRadialGradient(p.px,p.py,p.r*0.6,p.px,p.py,p.r*2.2);
+    const baseC=p.c1+'33'; atm.addColorStop(0,baseC); atm.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=atm; ctx.beginPath(); ctx.arc(p.px,p.py,p.r*2.2,0,Math.PI*2); ctx.fill();
+
+    const cg=ctx.createRadialGradient(p.px-p.r*0.3,p.py-p.r*0.3,2,p.px,p.py,p.r);
+    cg.addColorStop(0,p.c1); cg.addColorStop(0.65,p.c2); cg.addColorStop(1,'rgba(0,0,0,0.5)');
+    ctx.beginPath(); ctx.arc(p.px,p.py,p.r,0,Math.PI*2); ctx.fillStyle=cg; ctx.fill();
+
+    const hl=ctx.createRadialGradient(p.px-p.r*.28,p.py-p.r*.28,0,p.px-p.r*.28,p.py-p.r*.28,p.r*.5);
+    hl.addColorStop(0,'rgba(255,255,255,0.35)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.beginPath(); ctx.arc(p.px,p.py,p.r,0,Math.PI*2); ctx.fillStyle=hl; ctx.fill();
+
+    // Stripes
+    ctx.save(); ctx.beginPath(); ctx.arc(p.px,p.py,p.r,0,Math.PI*2); ctx.clip();
+    [0,1,2].forEach(s=>{ ctx.fillStyle=`rgba(0,0,0,${0.04+s*0.025})`; ctx.fillRect(p.px-p.r,p.py-p.r*.45+s*p.r*.32,p.r*2,p.r*.11); });
+    ctx.restore();
+
+    if(p.hasRing){
+      ctx.save(); ctx.translate(p.px,p.py); ctx.rotate(p.rot);
+      ctx.beginPath(); ctx.ellipse(0,0,p.r*1.65,p.r*.4,0,0,Math.PI*2);
+      ctx.strokeStyle=p.ring; ctx.lineWidth=4.5; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0,0,p.r*1.45,p.r*.28,0,0,Math.PI*2);
+      ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1.5; ctx.stroke();
       ctx.restore();
     }
-    
-    function drawGalaxySpiral() {
-      // Draw a faint spiral arm effect
-      const centerX = canvas.width * 0.5;
-      const centerY = canvas.height * 0.5;
-      
-      for (let i = 0; i < 2; i++) {
-        ctx.beginPath();
-        for (let angle = 0; angle < Math.PI * 4; angle += 0.1) {
-          const r = Math.pow(angle, 1.2) * 25;
-          const x = centerX + Math.cos(angle + i * Math.PI) * r;
-          const y = centerY + Math.sin(angle + i * Math.PI) * r;
-          if (angle === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = `rgba(100, 150, 200, 0.03)`;
-        ctx.lineWidth = 15;
-        ctx.stroke();
+  });
+
+  // Warp speed lines
+  warpLines.forEach(w=>{
+    ctx.strokeStyle=`rgba(0,255,231,${w.a})`; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.moveTo(w.x,w.y); ctx.lineTo(w.x+w.len,w.y); ctx.stroke();
+    w.x-=w.spd;
+    if(w.x+w.len<0){w.x=W;w.y=Math.random()*H;w.len=Math.random()*80+10;w.a=Math.random()*0.06+0.01;}
+  });
+
+  // Constellation web (interactive)
+  constellationPts.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0||p.x>W) p.vx*=-1;
+    if(p.y<0||p.y>H) p.vy*=-1;
+  });
+  constellationPts.forEach((p,i)=>{
+    const dx=mouseConstX-p.x, dy=mouseConstY-p.y;
+    const md=Math.sqrt(dx*dx+dy*dy);
+
+    // Connect close points
+    for(let j=i+1;j<constellationPts.length;j++){
+      const q=constellationPts[j];
+      const d=Math.hypot(q.x-p.x,q.y-p.y);
+      if(d<180){
+        ctx.strokeStyle=`rgba(0,255,231,${0.12*(1-d/180)})`;
+        ctx.lineWidth=0.5;
+        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
       }
     }
-    
-    function drawShootingStar() {
-      shootingStars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height * 0.2,
-        length: Math.random() * 60 + 40,
-        speedX: (Math.random() - 0.5) * 12 - 5,
-        speedY: Math.random() * 8 + 4,
-        alpha: 0.9,
-        color: `hsl(${Math.random() * 40 + 40}, 100%, 60%)`
-      });
+    // Connect to mouse
+    if(md<200){
+      ctx.strokeStyle=`rgba(0,255,231,${0.25*(1-md/200)})`;
+      ctx.lineWidth=0.8;
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(mouseConstX,mouseConstY); ctx.stroke();
     }
-    
-    function drawGalaxy() {
-      if (!ctx) return;
-      
-      // Deep space background with gradient
-      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      grad.addColorStop(0, '#03020a');
-      grad.addColorStop(0.3, '#060410');
-      grad.addColorStop(0.7, '#020108');
-      grad.addColorStop(1, '#010005');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw spiral galaxy arms
-      drawGalaxySpiral();
-      
-      // Draw cosmic dust
-      dustParticles.forEach(dust => {
-        ctx.beginPath();
-        ctx.arc(dust.x, dust.y, dust.radius, 0, Math.PI * 2);
-        ctx.fillStyle = dust.color;
-        ctx.fill();
-      });
-      
-      // Draw planets
-      planets.forEach(planet => drawPlanetWithTexture(planet));
-      
-      // Draw stars with twinkling effect
-      stars.forEach(star => {
-        star.alpha += star.twinkleSpeed * star.twinkleDir;
-        if (star.alpha > 0.9) star.twinkleDir = -1;
-        if (star.alpha < 0.2) star.twinkleDir = 1;
-        
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = star.color;
-        ctx.globalAlpha = star.alpha;
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-      
-      // Draw shooting stars
-      if (Math.random() < 0.015) drawShootingStar();
-      
-      for (let i = 0; i < shootingStars.length; i++) {
-        const s = shootingStars[i];
-        ctx.beginPath();
-        ctx.moveTo(s.x, s.y);
-        ctx.lineTo(s.x - s.length, s.y + s.length * 0.5);
-        
-        const gradient = ctx.createLinearGradient(s.x, s.y, s.x - s.length, s.y + s.length * 0.5);
-        gradient.addColorStop(0, s.color);
-        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-        
-        s.x += s.speedX;
-        s.y += s.speedY;
-        s.alpha -= 0.02;
-        if (s.alpha <= 0 || s.x > canvas.width || s.x < 0 || s.y > canvas.height) {
-          shootingStars.splice(i, 1);
-          i--;
-        }
-      }
-      
-      requestAnimationFrame(drawGalaxy);
+
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=md<200?`rgba(0,255,231,${0.5*(1-md/200)+0.2})`:'rgba(0,255,231,0.18)';
+    ctx.fill();
+  });
+
+  // Stars with cross sparkle
+  stars.forEach(s=>{
+    s.a+=s.s*s.d;
+    if(s.a>0.95)s.d=-1; if(s.a<0.12)s.d=1;
+    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    if(s.c){ctx.fillStyle=`rgba(${s.c},${s.a})`;}
+    else{ctx.fillStyle=`hsla(${s.h},100%,75%,${s.a})`;ctx.shadowColor=`hsla(${s.h},100%,75%,0.5)`;ctx.shadowBlur=s.r*4;}
+    ctx.fill(); ctx.shadowBlur=0;
+
+    if(s.cross&&s.a>0.5){
+      const arm=s.r*4*(s.a-0.5)*2;
+      ctx.strokeStyle=`rgba(255,255,255,${(s.a-0.5)*0.6})`;
+      ctx.lineWidth=0.5;
+      ctx.beginPath(); ctx.moveTo(s.x-arm,s.y); ctx.lineTo(s.x+arm,s.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(s.x,s.y-arm); ctx.lineTo(s.x,s.y+arm); ctx.stroke();
     }
-    
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-    drawGalaxy();
-    
-    // TYPING ANIMATION
-    const phrases = [
-      "Building digital bridges between imagination and interaction.",
-      "Code, motion, and future-forward design.",
-      "Creative technologist & visionary explorer."
-    ];
-    let phraseIndex = 0, charIndex = 0, isDeleting = false;
-    const typedElement = document.getElementById('typedText');
-    
-    function typeEffect() {
-      if (!typedElement) return;
-      const currentPhrase = phrases[phraseIndex];
-      if (isDeleting) {
-        typedElement.innerHTML = currentPhrase.substring(0, charIndex - 1) + '<span class="cursor">|</span>';
-        charIndex--;
-        if (charIndex === 0) {
-          isDeleting = false;
-          phraseIndex = (phraseIndex + 1) % phrases.length;
-        }
-      } else {
-        typedElement.innerHTML = currentPhrase.substring(0, charIndex + 1) + '<span class="cursor">|</span>';
-        charIndex++;
-        if (charIndex === currentPhrase.length) {
-          isDeleting = true;
-          setTimeout(typeEffect, 2000);
-          return;
-        }
-      }
-      setTimeout(typeEffect, isDeleting ? 50 : 100);
-    }
-    typeEffect();
-    
-    // NAVIGATION
-    const navBtns = document.querySelectorAll('.nav-btn');
-    const pages = {
-      home: document.getElementById('home-page'),
-      about: document.getElementById('about-page'),
-      education: document.getElementById('education-page'),
-      skills: document.getElementById('skills-page'),
-      journey: document.getElementById('journey-page'),
-      contact: document.getElementById('contact-page')
-    };
-    
-    function showPage(pageId) {
-      const colors = planetColors[pageId];
-      if (colors) showBigPlanet(colors.core, colors.ring);
-      
-      Object.values(pages).forEach(page => {
-        if (page) page.classList.remove('active-page');
-      });
-      if (pages[pageId]) pages[pageId].classList.add('active-page');
-      
-      navBtns.forEach(btn => {
-        if (btn.getAttribute('data-page') === pageId) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
-      });
-      
-      const mainContent = document.querySelector('.main-content');
-      if (mainContent) mainContent.scrollTop = 0;
-    }
-    
-    navBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const pageId = btn.getAttribute('data-page');
-        showPage(pageId);
-      });
-    });
-    
-    const exploreBtn = document.getElementById('exploreBtn');
-    if (exploreBtn) {
-      exploreBtn.addEventListener('click', () => {
-        showPage('about');
-      });
-    }
-    
-    const activeBtn = document.querySelector('.nav-btn.active');
-    if (activeBtn) {
-      showPage(activeBtn.getAttribute('data-page'));
-    } else {
-      showPage('home');
-    }
-    
-    const imgFrame = document.querySelector('.image-frame');
-    if(imgFrame) {
-      let floatY = 0, direction = 1;
-      setInterval(() => {
-        if(floatY > 3) direction = -1;
-        if(floatY < -3) direction = 1;
-        floatY += direction * 0.1;
-        imgFrame.style.transform = `translateY(${floatY}px)`;
-      }, 80);
-    }
-    
-    console.log("%c✨ Jharel Serrano — Realistic Galaxy with Textured Planets! 🌍🪐✨", "color: #00d4ff; font-size: 14px; font-weight: bold;");
-  })();
+  });
+
+  // Shooting stars
+  if(Math.random()<0.018){
+    shots.push({x:Math.random()*W,y:Math.random()*H*.25,vx:(Math.random()-.5)*9-3,vy:Math.random()*7+4,len:Math.random()*90+30,a:0.9,h:Math.random()>0.5?174:316});
+  }
+  for(let i=shots.length-1;i>=0;i--){
+    const s=shots[i];
+    const g=ctx.createLinearGradient(s.x,s.y,s.x-s.len,s.y+s.len*.5);
+    g.addColorStop(0,`hsla(${s.h},100%,80%,${s.a})`); g.addColorStop(1,`hsla(${s.h},100%,80%,0)`);
+    ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.len,s.y+s.len*.5);
+    ctx.strokeStyle=g; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(s.x,s.y,3,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${s.h},100%,85%,${s.a})`; ctx.fill();
+    s.x+=s.vx; s.y+=s.vy; s.a-=0.016;
+    if(s.a<=0||s.y>H+50)shots.splice(i,1);
+  }
+
+  // Comets
+  if(Math.random()<0.004) comets.push({x:Math.random()*W,y:-20,r:4.5,tl:Math.random()*90+45,vx:(Math.random()-.5)*2,vy:Math.random()*2.5+1,a:1,h:Math.random()*60+160});
+  for(let i=comets.length-1;i>=0;i--){
+    const c=comets[i];
+    const g=ctx.createLinearGradient(c.x,c.y,c.x-c.vx*c.tl,c.y-c.vy*c.tl);
+    g.addColorStop(0,`hsla(${c.h},100%,75%,${c.a})`); g.addColorStop(1,`hsla(${c.h},100%,75%,0)`);
+    ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(c.x-c.vx*c.tl,c.y-c.vy*c.tl);
+    ctx.strokeStyle=g; ctx.lineWidth=c.r*2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${c.h},100%,90%,${c.a})`; ctx.fill();
+    c.x+=c.vx; c.y+=c.vy; c.a-=0.003;
+    if(c.a<=0||c.y>H+50)comets.splice(i,1);
+  }
+
+  requestAnimationFrame(frame);
+}
+
+window.addEventListener('resize',resize);
+resize(); frame();
+
+// ─── TYPING ───────────────────────────────────────────────────────────────
+const phrases=[
+  'building digital bridges across imagination.',
+  'full-stack developer & future educator.',
+  'code · design · teach · inspire.',
+  'creating systems that help communities.'
+];
+let pi=0,ci=0,del=false;
+const typedEl=document.getElementById('typedEl');
+function type(){
+  if(!typedEl)return;
+  const cur=phrases[pi];
+  if(del){
+    typedEl.innerHTML=cur.substring(0,ci-1)+'<span class="t-cursor"></span>';
+    ci--;
+    if(ci===0){del=false;pi=(pi+1)%phrases.length;}
+  } else {
+    typedEl.innerHTML=cur.substring(0,ci+1)+'<span class="t-cursor"></span>';
+    ci++;
+    if(ci===cur.length){del=true;setTimeout(type,2400);return;}
+  }
+  setTimeout(type,del?38:72);
+}
+type();
+
+// ─── NAV ──────────────────────────────────────────────────────────────────
+const btns=document.querySelectorAll('.nav-btn,[data-page]');
+const pgMap={};
+document.querySelectorAll('.nav-btn').forEach(b=>{ pgMap[b.dataset.page]=document.getElementById(b.dataset.page+'-page'); });
+
+function showPage(id){
+  const w=document.createElement('div');
+  w.className='wipe'; document.body.appendChild(w);
+  setTimeout(()=>w.remove(),600);
+
+  Object.values(pgMap).forEach(p=>p&&p.classList.remove('active'));
+  if(pgMap[id]) pgMap[id].classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  document.getElementById('main').scrollTop=0;
+}
+
+document.querySelectorAll('.nav-btn').forEach(b=>{
+  b.addEventListener('click',e=>{ burst(e.clientX,e.clientY,24); setTimeout(()=>showPage(b.dataset.page),60); });
+});
+
+document.getElementById('exploreBtn')?.addEventListener('click',e=>{
+  burst(e.clientX,e.clientY,28); setTimeout(()=>showPage('about'),80);
+});
+
+// Ghost "ping me" button
+document.querySelector('.btn-ghost[data-page]')?.addEventListener('click',e=>{
+  burst(e.clientX,e.clientY,24); setTimeout(()=>showPage('contact'),60);
+});
+
+showPage('home');
+})();
 </script>
 </body>
 </html>
